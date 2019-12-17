@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoorMusic", "PoorMusic\PoorMusic.csproj", "{EF3A9ED9-A114-4E72-AD66-1315DE119A45}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicLibrary", "MusicLibrary\MusicLibrary.csproj", "{F5DF2E7D-DACF-4324-91CB-AD9A3A8D57E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMusicBox", "MyMusic\MyMusicBox.csproj", "{6FA351B3-D41C-480F-9F67-C5227045F1A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{EF3A9ED9-A114-4E72-AD66-1315DE119A45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF3A9ED9-A114-4E72-AD66-1315DE119A45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF3A9ED9-A114-4E72-AD66-1315DE119A45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5DF2E7D-DACF-4324-91CB-AD9A3A8D57E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5DF2E7D-DACF-4324-91CB-AD9A3A8D57E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5DF2E7D-DACF-4324-91CB-AD9A3A8D57E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5DF2E7D-DACF-4324-91CB-AD9A3A8D57E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FA351B3-D41C-480F-9F67-C5227045F1A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FA351B3-D41C-480F-9F67-C5227045F1A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FA351B3-D41C-480F-9F67-C5227045F1A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FA351B3-D41C-480F-9F67-C5227045F1A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
