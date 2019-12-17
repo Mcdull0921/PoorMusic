@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MusicBox</RootNamespace>
-    <AssemblyName>MusicBox</AssemblyName>
+    <AssemblyName>PoorMusic</AssemblyName>
     <ApplicationIcon>机器猫图标下载7 .ico</ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
