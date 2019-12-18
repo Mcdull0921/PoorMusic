@@ -398,7 +398,8 @@ namespace MusicBox
             {
                 tBtnPlay.Image = global::MusicBox.Properties.Resources.play;
                 tBtnPlay.Text = "播放";
-                notifyIcon1.Text = "我的音乐盒";
+                if (axWindowsMediaPlayer1.playState == WMPPlayState.wmppsStopped)
+                    notifyIcon1.Text = this.Text;
             }
 
         }
