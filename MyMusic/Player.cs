@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using WMPLib;
 using System.Collections;
+using MusicLibrary;
+using System.Threading.Tasks;
 
 namespace MusicBox
 {
@@ -75,11 +77,19 @@ namespace MusicBox
             }
         }
 
-        public void play(int index)
+        public async void play(int index)
         {
             if (index >= 0 && index < playList.Count)
             {
-                myPlayer.URL = playList[index].ToString();
+                var path = playList[index].ToString();
+                if (!string.IsNullOrEmpty(path) && path.Length > 3 && path.Substring(0, 3).Equals("kw_"))
+                {
+                    myPlayer.URL = await Task.Run(() => KuwoHelper.GetSongUrl(int.Parse(path.Substring(3))));
+                }
+                else
+                {
+                    myPlayer.URL = path;
+                }
                 currentPlay = index;
                 myPlayer.Ctlcontrols.play();
             }

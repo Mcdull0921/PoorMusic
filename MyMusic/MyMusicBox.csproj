@@ -96,6 +96,7 @@
     <Compile Include="myLrc.cs" />
     <Compile Include="myXml.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

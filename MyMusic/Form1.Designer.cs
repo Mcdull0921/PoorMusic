@@ -44,6 +44,11 @@
             this.媒体播放器ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.tBtnPlay = new System.Windows.Forms.ToolStripButton();
+            this.tBtnStop = new System.Windows.Forms.ToolStripButton();
+            this.tBtnPre = new System.Windows.Forms.ToolStripButton();
+            this.tBtnNext = new System.Windows.Forms.ToolStripButton();
+            this.tBtnSearch = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tLBStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -57,8 +62,6 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cMSListView = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.添加歌曲ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,6 +102,7 @@
             this.ucPager = new HZH_Controls.Controls.UCPagerControl2();
             this.panel1 = new System.Windows.Forms.Panel();
             this.txtWebSearch = new HZH_Controls.Controls.TextBoxEx();
+            this.btnWebSearch = new System.Windows.Forms.Panel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timerLrc = new System.Windows.Forms.Timer(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -118,12 +122,7 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.退出ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
-            this.btnWebSearch = new System.Windows.Forms.Panel();
-            this.tBtnPlay = new System.Windows.Forms.ToolStripButton();
-            this.tBtnStop = new System.Windows.Forms.ToolStripButton();
-            this.tBtnPre = new System.Windows.Forms.ToolStripButton();
-            this.tBtnNext = new System.Windows.Forms.ToolStripButton();
-            this.tBtnSearch = new System.Windows.Forms.ToolStripButton();
+            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -262,6 +261,51 @@
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // tBtnPlay
+            // 
+            this.tBtnPlay.Image = global::MusicBox.Properties.Resources.play;
+            this.tBtnPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tBtnPlay.Name = "tBtnPlay";
+            this.tBtnPlay.Size = new System.Drawing.Size(67, 28);
+            this.tBtnPlay.Text = "播放";
+            this.tBtnPlay.Click += new System.EventHandler(this.tBtnPlay_Click);
+            // 
+            // tBtnStop
+            // 
+            this.tBtnStop.Image = global::MusicBox.Properties.Resources.stop;
+            this.tBtnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tBtnStop.Name = "tBtnStop";
+            this.tBtnStop.Size = new System.Drawing.Size(67, 28);
+            this.tBtnStop.Text = "停止";
+            this.tBtnStop.Click += new System.EventHandler(this.tBtnStop_Click);
+            // 
+            // tBtnPre
+            // 
+            this.tBtnPre.Image = global::MusicBox.Properties.Resources.pre;
+            this.tBtnPre.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tBtnPre.Name = "tBtnPre";
+            this.tBtnPre.Size = new System.Drawing.Size(82, 28);
+            this.tBtnPre.Text = "上一首";
+            this.tBtnPre.Click += new System.EventHandler(this.tBtnPre_Click);
+            // 
+            // tBtnNext
+            // 
+            this.tBtnNext.Image = global::MusicBox.Properties.Resources.next;
+            this.tBtnNext.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tBtnNext.Name = "tBtnNext";
+            this.tBtnNext.Size = new System.Drawing.Size(82, 28);
+            this.tBtnNext.Text = "下一首";
+            this.tBtnNext.Click += new System.EventHandler(this.tBtnNext_Click);
+            // 
+            // tBtnSearch
+            // 
+            this.tBtnSearch.Image = global::MusicBox.Properties.Resources.Search;
+            this.tBtnSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tBtnSearch.Name = "tBtnSearch";
+            this.tBtnSearch.Size = new System.Drawing.Size(67, 28);
+            this.tBtnSearch.Text = "查找";
+            this.tBtnSearch.Click += new System.EventHandler(this.tBtnSearch_Click);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
@@ -289,7 +333,7 @@
             this.treeView1.Location = new System.Drawing.Point(0, 59);
             this.treeView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(109, 611);
+            this.treeView1.Size = new System.Drawing.Size(136, 611);
             this.treeView1.TabIndex = 5;
             this.treeView1.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView1_AfterLabelEdit);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -335,7 +379,7 @@
             // splitter1
             // 
             this.splitter1.Cursor = System.Windows.Forms.Cursors.SizeWE;
-            this.splitter1.Location = new System.Drawing.Point(109, 59);
+            this.splitter1.Location = new System.Drawing.Point(136, 59);
             this.splitter1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(4, 611);
@@ -348,11 +392,11 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(113, 59);
+            this.tabControl1.Location = new System.Drawing.Point(140, 59);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(642, 611);
+            this.tabControl1.Size = new System.Drawing.Size(615, 611);
             this.tabControl1.TabIndex = 7;
             // 
             // tabPage1
@@ -362,7 +406,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tabPage1.Size = new System.Drawing.Size(634, 582);
+            this.tabPage1.Size = new System.Drawing.Size(607, 582);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "歌曲列表";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -371,9 +415,8 @@
             // 
             this.listView1.AllowDrop = true;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader11,
             this.columnHeader4,
-            this.columnHeader5,
-            this.columnHeader6,
             this.columnHeader7});
             this.listView1.ContextMenuStrip = this.cMSListView;
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -384,7 +427,7 @@
             this.listView1.Location = new System.Drawing.Point(4, 3);
             this.listView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(626, 576);
+            this.listView1.Size = new System.Drawing.Size(599, 576);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -395,17 +438,7 @@
             // columnHeader4
             // 
             this.columnHeader4.Text = "歌名";
-            this.columnHeader4.Width = 100;
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "路径";
-            this.columnHeader5.Width = 150;
-            // 
-            // columnHeader6
-            // 
-            this.columnHeader6.Text = "类型";
-            this.columnHeader6.Width = 50;
+            this.columnHeader4.Width = 150;
             // 
             // columnHeader7
             // 
@@ -776,6 +809,19 @@
             this.txtWebSearch.TabIndex = 1;
             this.txtWebSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtWebSearch_KeyDown);
             // 
+            // btnWebSearch
+            // 
+            this.btnWebSearch.BackgroundImage = global::MusicBox.Properties.Resources.Boomy_034;
+            this.btnWebSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnWebSearch.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnWebSearch.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnWebSearch.Location = new System.Drawing.Point(606, 0);
+            this.btnWebSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnWebSearch.Name = "btnWebSearch";
+            this.btnWebSearch.Size = new System.Drawing.Size(28, 27);
+            this.btnWebSearch.TabIndex = 0;
+            this.btnWebSearch.Click += new System.EventHandler(this.btnWebSearch_Click);
+            // 
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
@@ -921,63 +967,9 @@
             this.axWindowsMediaPlayer1.TabIndex = 4;
             this.axWindowsMediaPlayer1.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(this.axWindowsMediaPlayer1_PlayStateChange);
             // 
-            // btnWebSearch
+            // columnHeader11
             // 
-            this.btnWebSearch.BackgroundImage = global::MusicBox.Properties.Resources.Boomy_034;
-            this.btnWebSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnWebSearch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnWebSearch.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnWebSearch.Location = new System.Drawing.Point(606, 0);
-            this.btnWebSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.btnWebSearch.Name = "btnWebSearch";
-            this.btnWebSearch.Size = new System.Drawing.Size(28, 27);
-            this.btnWebSearch.TabIndex = 0;
-            this.btnWebSearch.Click += new System.EventHandler(this.btnWebSearch_Click);
-            // 
-            // tBtnPlay
-            // 
-            this.tBtnPlay.Image = global::MusicBox.Properties.Resources.play;
-            this.tBtnPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tBtnPlay.Name = "tBtnPlay";
-            this.tBtnPlay.Size = new System.Drawing.Size(67, 28);
-            this.tBtnPlay.Text = "播放";
-            this.tBtnPlay.Click += new System.EventHandler(this.tBtnPlay_Click);
-            // 
-            // tBtnStop
-            // 
-            this.tBtnStop.Image = global::MusicBox.Properties.Resources.stop;
-            this.tBtnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tBtnStop.Name = "tBtnStop";
-            this.tBtnStop.Size = new System.Drawing.Size(67, 28);
-            this.tBtnStop.Text = "停止";
-            this.tBtnStop.Click += new System.EventHandler(this.tBtnStop_Click);
-            // 
-            // tBtnPre
-            // 
-            this.tBtnPre.Image = global::MusicBox.Properties.Resources.pre;
-            this.tBtnPre.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tBtnPre.Name = "tBtnPre";
-            this.tBtnPre.Size = new System.Drawing.Size(82, 28);
-            this.tBtnPre.Text = "上一首";
-            this.tBtnPre.Click += new System.EventHandler(this.tBtnPre_Click);
-            // 
-            // tBtnNext
-            // 
-            this.tBtnNext.Image = global::MusicBox.Properties.Resources.next;
-            this.tBtnNext.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tBtnNext.Name = "tBtnNext";
-            this.tBtnNext.Size = new System.Drawing.Size(82, 28);
-            this.tBtnNext.Text = "下一首";
-            this.tBtnNext.Click += new System.EventHandler(this.tBtnNext_Click);
-            // 
-            // tBtnSearch
-            // 
-            this.tBtnSearch.Image = global::MusicBox.Properties.Resources.Search;
-            this.tBtnSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tBtnSearch.Name = "tBtnSearch";
-            this.tBtnSearch.Size = new System.Drawing.Size(67, 28);
-            this.tBtnSearch.Text = "查找";
-            this.tBtnSearch.Click += new System.EventHandler(this.tBtnSearch_Click);
+            this.columnHeader11.Text = "序号";
             // 
             // Form1
             // 
@@ -1098,8 +1090,6 @@
         private System.Windows.Forms.ToolStripMenuItem 单曲循环ToolStripMenuItem1;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
-        private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ToolStripMenuItem 单曲播放ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 单曲播放ToolStripMenuItem1;
@@ -1116,6 +1106,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private HZH_Controls.Controls.UCPagerControl2 ucPager;
         private HZH_Controls.Controls.TextBoxEx txtWebSearch;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
     }
 }
 

@@ -42,7 +42,7 @@ namespace MusicBox
             var cnt = 0;
             foreach (var s in songs)
             {
-                s.songUrl = KuwoHelper.GetSongUrl(s.rid);
+                s.songUrl = string.Format("kw_{0}", s.rid);
                 owner.Invoke(new Action(() =>
                 {
                     ++cnt;

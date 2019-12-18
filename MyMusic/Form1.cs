@@ -80,36 +80,30 @@ namespace MusicBox
             myplayer.Clear();
             string type;
             myXml x = new myXml();
-            XmlNodeList list = x.GetPlayers(treeView1.SelectedNode.Name);
-
-            for (int i = 0; i < list.Count; i++)
+            var playInfos = x.GetPlayers(treeView1.SelectedNode.Name);
+            for (int i = 0; i < playInfos.Length; i++)
             {
-                if (list[i].ChildNodes.Count > 0)
+                ListViewItem it = new ListViewItem();
+                it.Text = (i + 1).ToString();
+                it.SubItems.Add(playInfos[i].remark);
+                type = getExt(playInfos[i].url);
+                switch (type)
                 {
-                    ListViewItem it = new ListViewItem();
-                    it.Text = list[i].ChildNodes[1].InnerText.Trim();
-                    it.SubItems.Add(list[i].ChildNodes[0].InnerText.Trim());
-
-                    type = list[i].ChildNodes[0].InnerText.Trim();
-                    type = getExt(type);
-                    switch (type)
-                    {
-                        case ".mp3":
-                            it.ImageIndex = 0;
-                            break;
-                        case ".wma":
-                            it.ImageIndex = 1;
-                            break;
-                        default:
-                            it.ImageIndex = 2;
-                            break;
-                    }
-                    it.SubItems.Add(type);
-                    it.SubItems.Add(list[i].ChildNodes[2].InnerText.Trim());
-                    it.Tag = list[i].Attributes["ID"].Value;
-                    listView1.Items.Add(it);
-                    myplayer.AddFile(it.SubItems[1].Text);
+                    case ".mp3":
+                        it.ImageIndex = 0;
+                        break;
+                    case ".wma":
+                        it.ImageIndex = 1;
+                        break;
+                    default:
+                        it.ImageIndex = 2;
+                        break;
                 }
+                it.SubItems.Add(playInfos[i].lrc);
+                it.Tag = playInfos[i];
+                listView1.Items.Add(it);
+                myplayer.AddFile(playInfos[i].url);
+
             }
             bindCurrentPlay();
         }
@@ -117,6 +111,8 @@ namespace MusicBox
         private string getExt(string fileName)
         {
             int i = fileName.LastIndexOf('.');
+            if (i < 0)
+                return "";
             int j = fileName.IndexOf('?', i);
             if (j > 0)
             {
@@ -153,7 +149,9 @@ namespace MusicBox
             if (index >= 0 && index < listView1.Items.Count)
             {
                 listView1.Items[index].BackColor = Color.YellowGreen;
-                tLBStatus.Text = "当前播放:" + listView1.Items[index].SubItems[0].Text + "  播放列表:" + treeView1.SelectedNode.Text + "  " + Convert.ToString(index + 1) + "/" + myplayer.NumOfMusic;
+                var info = listView1.Items[index].Tag as PlayInfo;
+                tLBStatus.Text = "当前播放:" + info.remark + "  播放列表:" + treeView1.SelectedNode.Text + "  " + Convert.ToString(index + 1) + "/" + myplayer.NumOfMusic;
+                notifyIcon1.Text = tLBStatus.Text;
             }
         }
 
@@ -312,7 +310,8 @@ namespace MusicBox
             bindPlay(index);
             if (index >= 0 && index < listView1.Items.Count)
             {
-                string path = listView1.Items[index].SubItems[3].Text;
+                var info = listView1.Items[index].Tag as PlayInfo;
+                string path = info.lrc;
                 if (path != "")
                 {
                     try
@@ -388,7 +387,6 @@ namespace MusicBox
             {
                 tBtnPlay.Image = global::MusicBox.Properties.Resources.pause;
                 tBtnPlay.Text = "暂停";
-                notifyIcon1.Text = axWindowsMediaPlayer1.currentMedia.name;
                 if (lrc != null)
                 {
                     timerLrc.Start();
@@ -398,8 +396,6 @@ namespace MusicBox
             {
                 tBtnPlay.Image = global::MusicBox.Properties.Resources.play;
                 tBtnPlay.Text = "播放";
-                if (axWindowsMediaPlayer1.playState == WMPPlayState.wmppsStopped)
-                    notifyIcon1.Text = this.Text;
             }
 
         }
@@ -521,14 +517,13 @@ namespace MusicBox
                 string id = listView1.SelectedItems[0].Tag.ToString();
                 myXml x = new myXml();
                 IWMPMedia media = axWindowsMediaPlayer1.newMedia(listView1.SelectedItems[0].SubItems[1].Text);
-                Form3 f = new Form3(media, listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[3].Text);
+                Form3 f = new Form3(media, listView1.SelectedItems[0].SubItems[1].Text, listView1.SelectedItems[0].SubItems[2].Text);
                 if (f.ShowDialog() == DialogResult.OK)
                 {
-
                     try
                     {
                         x.UpdRemark(listid, id, f.txtRemark.Text.Trim());
-                        listView1.SelectedItems[0].SubItems[0].Text = f.txtRemark.Text.Trim();
+                        listView1.SelectedItems[0].SubItems[1].Text = f.txtRemark.Text.Trim();
                     }
                     catch (Exception ex)
                     {
@@ -662,15 +657,21 @@ namespace MusicBox
         private void search(string name)
         {
             Regex rx = new Regex(@"^.*" + name + ".*$", RegexOptions.IgnoreCase);
-
-            foreach (ListViewItem it in listView1.Items)
+            var select = -1;
+            for (int i = 0; i < listView1.Items.Count; i++)
             {
+                ListViewItem it = listView1.Items[i];
                 it.Selected = false;
                 if (rx.IsMatch(it.Text))
                 {
                     it.Selected = true;
+                    select = i;
                 }
             }
+            if (select >= 0)
+                listView1.EnsureVisible(select);
+            else
+                MessageBox.Show("未查找到任何项!");
         }
 
         private void Form1_Load(object sender, EventArgs e)

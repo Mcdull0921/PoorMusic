@@ -51,7 +51,7 @@ namespace MusicBox
             return list;
         }
 
-        public XmlNodeList GetPlayers(string listid)
+        public PlayInfo[] GetPlayers(string listid)
         {
 
             XmlDocument doc = new XmlDocument();
@@ -59,7 +59,18 @@ namespace MusicBox
             XmlNode playLists = doc.DocumentElement.SelectSingleNode("PlayLists");
             XmlNode node = playLists.SelectSingleNode("PlayList[@ID='" + listid + "']");
             XmlNodeList list = node.ChildNodes;
-            return list;
+            PlayInfo[] res = new PlayInfo[list.Count];
+            for (int i = 0; i < list.Count; i++)
+            {
+                res[i] = new PlayInfo()
+                {
+                    id = int.Parse(list[i].Attributes["ID"].Value),
+                    remark = list[i].ChildNodes[1].InnerText.Trim(),
+                    url = list[i].ChildNodes[0].InnerText.Trim(),
+                    lrc = list[i].ChildNodes[2].InnerText.Trim()
+                };
+            }
+            return res;
 
         }
 
