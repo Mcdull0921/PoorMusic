@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MusicBox</RootNamespace>
     <AssemblyName>PoorMusic</AssemblyName>
-    <ApplicationIcon>机器猫图标下载7 .ico</ApplicationIcon>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -55,13 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomControl\TextBoxEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControl\TextBoxEx.designer.cs">
-      <DependentUpon>TextBoxEx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\TextInputType.cs" />
+    <Compile Include="AddSongsProgress.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,6 +86,12 @@
     <Compile Include="Form5.Designer.cs">
       <DependentUpon>Form5.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormProcess.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormProcess.Designer.cs">
+      <DependentUpon>FormProcess.cs</DependentUpon>
+    </Compile>
     <Compile Include="HttpHelper.cs" />
     <Compile Include="myLrc.cs" />
     <Compile Include="myXml.cs" />
@@ -117,6 +117,9 @@
     <EmbeddedResource Include="Form5.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Form5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormProcess.resx">
+      <DependentUpon>FormProcess.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -185,13 +188,19 @@
     <None Include="Resources\Search.ico" />
     <None Include="Resources\1.jpg" />
     <None Include="Resources\Boomy_034.ico" />
-    <Content Include="机器猫图标下载7 .ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HZH_Controls\HZH_Controls.csproj">
+      <Project>{af32e163-c577-4cbc-a072-0dc1ce0e1da3}</Project>
+      <Name>HZH_Controls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MusicLibrary\MusicLibrary.csproj">
       <Project>{f5df2e7d-dacf-4324-91cb-ad9a3a8d57e8}</Project>
       <Name>MusicLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -66,7 +66,7 @@ namespace MusicBox
             }
         }
 
-        private void bindListView()
+        public void bindListView()
         {
             if (this.treeView1.SelectedNode != null)
             {
@@ -570,22 +570,11 @@ namespace MusicBox
 
         private void cMSListView_Opening(object sender, CancelEventArgs e)
         {
-            if (listView1.SelectedItems.Count > 0)
-            {
-                删除歌曲ToolStripMenuItem.Visible = true;
-                关联歌词ToolStripMenuItem.Visible = true;
-                属性ToolStripMenuItem.Visible = true;
-                toolStripSeparator2.Visible = true;
-                MoveToolStripMenuItem.Visible = true;
-            }
-            else
-            {
-                删除歌曲ToolStripMenuItem.Visible = false;
-                关联歌词ToolStripMenuItem.Visible = false;
-                属性ToolStripMenuItem.Visible = false;
-                toolStripSeparator2.Visible = false;
-                MoveToolStripMenuItem.Visible = false;
-            }
+            删除歌曲ToolStripMenuItem.Visible = listView1.SelectedItems.Count > 0;
+            关联歌词ToolStripMenuItem.Visible = listView1.SelectedItems.Count == 1;
+            属性ToolStripMenuItem.Visible = listView1.SelectedItems.Count == 1;
+            toolStripSeparator2.Visible = listView1.SelectedItems.Count == 1;
+            MoveToolStripMenuItem.Visible = listView1.SelectedItems.Count > 0;
         }
 
         private void 图标ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -691,12 +680,6 @@ namespace MusicBox
             //se.SkinFile = "Wave.ssk";
         }
 
-        private void 作者信息ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Form5 f = new Form5();
-            f.ShowDialog();
-        }
-
         private void MoveToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             MoveToolStripMenuItem.DropDownItems.Clear();
@@ -738,95 +721,153 @@ namespace MusicBox
 
         #region 网络歌曲
         #region 抓取歌曲列表
-        private const int length = 10;             //抓取记录数目
+        private void btnWebSearch_Click(object sender, EventArgs e)
+        {
+            Search(1, ucPager.PageSize);
+        }
 
-        private async void btnWebSearch_Click(object sender, EventArgs e)
+        private void txtWebSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnWebSearch_Click(null, null);
+            }
+        }
+
+        private async void Search(int pageNo, int pageSize)
         {
             string txt = txtWebSearch.Text.Trim();
             if (txt == string.Empty) return;
-            ChangeState(false, txt);
-            var result = await Task.Run(() => KuwoHelper.Search(txt, 1, length));
-            bind(result.list);
-            ChangeState(true, txt);
+            ChangeState(false);
+            var result = await Task.Run(() => KuwoHelper.Search(txt, pageNo, pageSize));
+            if (result != null)
+            {
+                bind(result.list, result.total, pageNo, pageSize);
+            }
+            else
+            {
+                MessageBox.Show("未检索到任何结果！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            ChangeState(true);
         }
 
-        private void bind(List<SongInfo> datas)
+        private void bind(List<SongInfo> datas, int total, int pageNo, int pageSize)
         {
             lvWebList.Items.Clear();
-
+            var index = (pageNo - 1) * pageSize;
             foreach (var song in datas)
             {
-                ListViewItem item = new ListViewItem(song.name);
+                ListViewItem item = new ListViewItem((++index).ToString());
                 item.Tag = song;
+                item.SubItems.Add(song.name);
                 item.SubItems.Add(song.artist);
                 item.SubItems.Add(song.album);
                 item.SubItems.Add(song.songTimeMinutes);
                 item.SubItems.Add(song.isListenFee ? "是" : "免费");
                 lvWebList.Items.Add(item);
             }
+            ucPager.PageIndex = pageNo;
+            ucPager.PageCount = total / pageSize + (total % pageSize == 0 ? 0 : 1);
         }
 
-        private void ChangeState(bool enable, string s)
+        private void ChangeState(bool enable)
         {
-            if (enable)
-            {
-                this.btnWebSearch.Enabled = true;
-                txtWebSearch.Text = "";
-                txtWebSearch.Enabled = true;
-            }
-            else
-            {
-                this.btnWebSearch.Enabled = false;
-                txtWebSearch.Text = "正在搜索\"" + s + "\"请稍候..";
-                txtWebSearch.Enabled = false;
-            }
+            btnWebSearch.Enabled = enable;
+            txtWebSearch.Enabled = enable;
+            ucPager.Enabled = enable;
         }
 
+        private void ucPager_ShowSourceChanged(object currentSource)
+        {
+            Search(ucPager.PageIndex, ucPager.PageSize);
+        }
         #endregion
 
         #region 抓取链接
         private void btnWebMove_DropDownOpening(object sender, EventArgs e)
         {
-            btnWebMove.DropDownItems.Clear();
+            ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+            toolStripMenuItem.DropDownItems.Clear();
             foreach (TreeNode node in treeView1.Nodes)
             {
                 ToolStripMenuItem it = new ToolStripMenuItem();
                 it.Tag = node.Name;
                 it.Text = node.Text;
-                btnWebMove.DropDownItems.Add(it);
+                toolStripMenuItem.DropDownItems.Add(it);
             }
         }
+        private void cmsWebListView_Opening(object sender, CancelEventArgs e)
+        {
+            btnWebDown.Enabled = btnWebMove.Enabled = this.lvWebList.SelectedItems.Count > 0;
+        }
 
+        private void btnWebAllMove_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            var listid = e.ClickedItem.Tag.ToString();   //播放列表id
+            List<SongInfo> songs = new List<SongInfo>();
+            foreach (ListViewItem select in lvWebList.Items)
+            {
+                songs.Add(select.Tag as SongInfo);
+            }
+            if (songs.Count == 0)
+                return;
+            SongsProgress progress = new SongsProgress(songs);
+            progress.AddSongs(this, listid);
+        }
 
-        private string listid;          //播放列表id
-        private async void btnWebMove_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void btnWebMove_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             if (this.lvWebList.SelectedItems.Count > 0)
             {
-                listid = e.ClickedItem.Tag.ToString();
+                var listid = e.ClickedItem.Tag.ToString();
                 List<SongInfo> songs = new List<SongInfo>();
                 foreach (ListViewItem select in lvWebList.SelectedItems)
                 {
                     songs.Add(select.Tag as SongInfo);
                 }
-                this.btnWebMove.Enabled = false;
-                await Task.Run(() =>
-                {
-                    foreach (var s in songs)
-                    {
-                        s.songUrl = KuwoHelper.GetSongUrl(s.rid);
-                    }
-                    myXml.AddSongs(listid, songs);
-                });
-                this.bindListView();
-                MessageBox.Show("添加成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.btnWebMove.Enabled = true;
+                SongsProgress progress = new SongsProgress(songs);
+                progress.AddSongs(this, listid);
             }
             else
                 MessageBox.Show("请先选择歌曲！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void btnWebDown_Click(object sender, EventArgs e)
+        {
+            if (this.lvWebList.SelectedItems.Count > 0)
+            {
+                FolderBrowserDialog fbd = new FolderBrowserDialog();
+                if (fbd.ShowDialog() == DialogResult.OK)
+                {
+                    DirectoryInfo dir = new DirectoryInfo(fbd.SelectedPath);
+                    List<SongInfo> songs = new List<SongInfo>();
+                    foreach (ListViewItem select in lvWebList.SelectedItems)
+                    {
+                        songs.Add(select.Tag as SongInfo);
+                    }
+                    SongsProgress progress = new SongsProgress(songs);
+                    progress.DownloadSongs(this, dir.FullName);
+                }
+            }
+            else
+                MessageBox.Show("请先选择歌曲！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
+        private void btnWebAllDown_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if (fbd.ShowDialog() == DialogResult.OK)
+            {
+                DirectoryInfo dir = new DirectoryInfo(fbd.SelectedPath);
+                List<SongInfo> songs = new List<SongInfo>();
+                foreach (ListViewItem select in lvWebList.Items)
+                {
+                    songs.Add(select.Tag as SongInfo);
+                }
+                SongsProgress progress = new SongsProgress(songs);
+                progress.DownloadSongs(this, dir.FullName);
+            }
+        }
         #endregion
         #endregion
 
@@ -869,6 +910,12 @@ namespace MusicBox
                     addPlay(file.FullName, "");
                 }
             }
+        }
+
+        private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form5 f = new Form5();
+            f.ShowDialog();
         }
     }
 }

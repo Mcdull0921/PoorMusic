@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过下列属性集
 // 控制。更改这些属性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("穷人音乐盒")]
+[assembly: AssemblyTitle("穷人音乐盒Beta版")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("大健神")]
 [assembly: AssemblyProduct("PoorMusic")]
-[assembly: AssemblyCopyright("Copyright © Mr.Dull 2009-2019")]
+[assembly: AssemblyCopyright("Copyright © 大健神 2009-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
