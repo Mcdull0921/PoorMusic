@@ -40,16 +40,17 @@ namespace MusicBox
             Form1 owner = tuple.Item1;
             string listid = tuple.Item2;
             var cnt = 0;
+            List<PlayInfo> res = new List<PlayInfo>();
             foreach (var s in songs)
             {
-                s.songUrl = string.Format("kw_{0}", s.rid);
+                res.Add(PlayInfo.CreateNew(s.name, "", s.album, s.artist, s.songTimeMinutes, "kw_" + s.rid));
                 owner.Invoke(new Action(() =>
                 {
                     ++cnt;
                     process.SetValue(cnt, string.Format("正在添加第{0}/{1}首歌曲：{2}", cnt, songs.Count, s.name));
                 }));
             }
-            myXml.AddSongs(listid, songs);
+            XmlConfig.AddSongs(listid, res);
             isDone = true;
             owner.Invoke(new Action(() =>
             {
@@ -102,7 +103,8 @@ namespace MusicBox
         {
             if (isDone)
             {
-                MessageBox.Show(title + "成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (title == "下载")
+                    MessageBox.Show("下载完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 thread.Abort();
                 thread = null;
             }

@@ -12,8 +12,8 @@ namespace MusicBox
     {
 
         private AxWMPLib.AxWindowsMediaPlayer myPlayer;
-        private ArrayList playList;
-        private int currentPlay;
+        private List<PlayInfo> playList;
+        private int currentPlay = -1;
 
 
         public int NumOfMusic
@@ -40,18 +40,11 @@ namespace MusicBox
             }
         }
 
-        //public string PlayList(int num)
-        //{
-        //    return playList[num].ToString();
-        //}
-
-
-
 
         public Player(AxWMPLib.AxWindowsMediaPlayer mediaPlayer)
         {
             myPlayer = mediaPlayer;
-            playList = new ArrayList();
+            playList = new List<PlayInfo>();
         }
 
 
@@ -60,12 +53,9 @@ namespace MusicBox
             playList.Clear();
         }
 
-        public void AddFile(string path)
+        public void AddFile(PlayInfo info)
         {
-            if (playList.Count < 1000)
-            {
-                playList.Add(path);
-            }
+            playList.Add(info);
 
         }
 
@@ -77,18 +67,19 @@ namespace MusicBox
             }
         }
 
-        public async void play(int index)
+        public async void Play(int index)
         {
             if (index >= 0 && index < playList.Count)
             {
-                var path = playList[index].ToString();
-                if (!string.IsNullOrEmpty(path) && path.Length > 3 && path.Substring(0, 3).Equals("kw_"))
+                var playInfo = playList[index];
+                if (!string.IsNullOrEmpty(playInfo.sourceId) && playInfo.sourceId.Length > 3 && playInfo.sourceId.Substring(0, 3).Equals("kw_"))
                 {
-                    myPlayer.URL = await Task.Run(() => KuwoHelper.GetSongUrl(int.Parse(path.Substring(3))));
+                    var url = myPlayer.URL = await Task.Run(() => KuwoHelper.GetSongUrl(int.Parse(playInfo.sourceId.Substring(3))));
+                    XmlConfig.UpdSongUrl(playInfo.id, url);
                 }
                 else
                 {
-                    myPlayer.URL = path;
+                    myPlayer.URL = playInfo.url;
                 }
                 currentPlay = index;
                 myPlayer.Ctlcontrols.play();

@@ -93,8 +93,7 @@
       <DependentUpon>FormProcess.cs</DependentUpon>
     </Compile>
     <Compile Include="HttpHelper.cs" />
-    <Compile Include="myLrc.cs" />
-    <Compile Include="myXml.cs" />
+    <Compile Include="XmlConfig.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayInfo.cs" />
     <Compile Include="Program.cs" />

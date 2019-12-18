@@ -17,20 +17,18 @@ namespace MusicBox
     public partial class Form1 : Form
     {
         Player myplayer;
-        myLrc lrc;
         int modeType = 0;
 
         private void init()
         {
             InitializeComponent();
-
             myplayer = new Player(axWindowsMediaPlayer1);
             bindTreeView();
             if (treeView1.Nodes.Count > 0)
             {
                 treeView1.SelectedNode = treeView1.Nodes[0];
             }
-            modeType = myXml.GetPlayMode();
+            modeType = XmlConfig.GetPlayMode();
         }
 
         public Form1()
@@ -57,8 +55,7 @@ namespace MusicBox
         private void bindTreeView()
         {
             treeView1.Nodes.Clear();
-            myXml x = new myXml();
-            XmlNodeList list = x.GetPlayList();
+            XmlNodeList list = XmlConfig.GetPlayList();
             for (int i = 0; i < list.Count; i++)
             {
                 treeView1.Nodes.Add(list[i].Attributes["ID"].Value, list[i].Attributes["name"].Value);
@@ -78,34 +75,50 @@ namespace MusicBox
         {
             listView1.Items.Clear();
             myplayer.Clear();
-            string type;
-            myXml x = new myXml();
-            var playInfos = x.GetPlayers(treeView1.SelectedNode.Name);
+            var playInfos = XmlConfig.GetPlayers(treeView1.SelectedNode.Name);
             for (int i = 0; i < playInfos.Length; i++)
             {
-                ListViewItem it = new ListViewItem();
-                it.Text = (i + 1).ToString();
-                it.SubItems.Add(playInfos[i].remark);
-                type = getExt(playInfos[i].url);
-                switch (type)
-                {
-                    case ".mp3":
-                        it.ImageIndex = 0;
-                        break;
-                    case ".wma":
-                        it.ImageIndex = 1;
-                        break;
-                    default:
-                        it.ImageIndex = 2;
-                        break;
-                }
-                it.SubItems.Add(playInfos[i].lrc);
-                it.Tag = playInfos[i];
-                listView1.Items.Add(it);
-                myplayer.AddFile(playInfos[i].url);
-
+                listView1.Items.Add(CreateListViewItem(i + 1, playInfos[i]));
+                myplayer.AddFile(playInfos[i]);
             }
-            bindCurrentPlay();
+            if (axWindowsMediaPlayer1.currentMedia != null)
+            {
+                string url = axWindowsMediaPlayer1.currentMedia.sourceURL;
+                foreach (ListViewItem it in listView1.Items)
+                {
+                    it.BackColor = Color.White;
+                    if (((PlayInfo)it.Tag).url == url)
+                    {
+                        it.BackColor = Color.YellowGreen;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private ListViewItem CreateListViewItem(int index, PlayInfo playInfo)
+        {
+            ListViewItem it = new ListViewItem();
+            it.Text = index.ToString();
+            it.SubItems.Add(playInfo.remark);
+            it.SubItems.Add(playInfo.artist);
+            it.SubItems.Add(playInfo.album);
+            it.SubItems.Add(playInfo.time);
+            it.Tag = playInfo;
+            var type = getExt(playInfo.url);
+            switch (type)
+            {
+                case ".mp3":
+                    it.ImageIndex = 0;
+                    break;
+                case ".wma":
+                    it.ImageIndex = 1;
+                    break;
+                default:
+                    it.ImageIndex = 2;
+                    break;
+            }
+            return it;
         }
 
         private string getExt(string fileName)
@@ -124,42 +137,10 @@ namespace MusicBox
             }
         }
 
-        private void bindCurrentPlay()
-        {
-            if (axWindowsMediaPlayer1.currentMedia != null)
-            {
-                string url = axWindowsMediaPlayer1.currentMedia.sourceURL;
-                foreach (ListViewItem it in listView1.Items)
-                {
-                    it.BackColor = Color.White;
-                    if (it.SubItems[1].Text == url)
-                    {
-                        it.BackColor = Color.YellowGreen;
-                    }
-                }
-            }
-        }
-
-        private void bindPlay(int index)
-        {
-            foreach (ListViewItem it in listView1.Items)
-            {
-                it.BackColor = Color.White;
-            }
-            if (index >= 0 && index < listView1.Items.Count)
-            {
-                listView1.Items[index].BackColor = Color.YellowGreen;
-                var info = listView1.Items[index].Tag as PlayInfo;
-                tLBStatus.Text = "当前播放:" + info.remark + "  播放列表:" + treeView1.SelectedNode.Text + "  " + Convert.ToString(index + 1) + "/" + myplayer.NumOfMusic;
-                notifyIcon1.Text = tLBStatus.Text;
-            }
-        }
-
 
         #region  播放列表
         private void 新列表ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            myXml x = new myXml();
             string name = "新列表";
             int max = 1;
             if (treeView1.Nodes.Count > 0)
@@ -176,7 +157,7 @@ namespace MusicBox
                 max = max + 1;
             }
             treeView1.Nodes.Add(max.ToString(), name);
-            x.AddPlayList(name, max.ToString());
+            XmlConfig.AddPlayList(name, max.ToString());
         }
 
         private void 删除列表ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -185,10 +166,9 @@ namespace MusicBox
             {
                 if (MessageBox.Show("确定要删除播放列表“" + treeView1.SelectedNode.Text + "”及里面的歌曲吗？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
-                    myXml x = new myXml();
                     if (treeView1.SelectedNode != null)
                     {
-                        x.DelPlayList(treeView1.SelectedNode.Name);
+                        XmlConfig.DelPlayList(treeView1.SelectedNode.Name);
                         bindTreeView();
                         listView1.Items.Clear();
                         myplayer.Clear();
@@ -219,9 +199,7 @@ namespace MusicBox
                 e.CancelEdit = true;
                 return;
             }
-
-            myXml x = new myXml();
-            x.UpdPlayList(treeView1.SelectedNode.Name, name);
+            XmlConfig.UpdPlayList(treeView1.SelectedNode.Name, name);
         }
 
         private void cMSTreeView_Opening(object sender, CancelEventArgs e)
@@ -246,31 +224,31 @@ namespace MusicBox
         private void 顺序播放ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 0;
-            myXml.SetPlayMode(modeType);
+            XmlConfig.SetPlayMode(modeType);
         }
 
         private void 循环播放ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 1;
-            myXml.SetPlayMode(modeType);
+            XmlConfig.SetPlayMode(modeType);
         }
 
         private void 单曲循环ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 2;
-            myXml.SetPlayMode(modeType);
+            XmlConfig.SetPlayMode(modeType);
         }
 
         private void 随机播放ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 3;
-            myXml.SetPlayMode(modeType);
+            XmlConfig.SetPlayMode(modeType);
         }
 
         private void 单曲播放ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 4;
-            myXml.SetPlayMode(modeType);
+            XmlConfig.SetPlayMode(modeType);
         }
 
         private void tBtnPlay_Click(object sender, EventArgs e)
@@ -301,30 +279,17 @@ namespace MusicBox
         /// <param name="index">歌曲列表的索引</param>
         private void play(int index)
         {
-            timerLrc.Stop();
-            lrc = null;
-            label1.Text = "……";
-            label2.Text = "00:00";
-            richTextBox1.Text = "";
-            myplayer.play(index);
-            bindPlay(index);
+            myplayer.Play(index);
+            foreach (ListViewItem it in listView1.Items)
+            {
+                it.BackColor = Color.White;
+            }
             if (index >= 0 && index < listView1.Items.Count)
             {
+                listView1.Items[index].BackColor = Color.YellowGreen;
                 var info = listView1.Items[index].Tag as PlayInfo;
-                string path = info.lrc;
-                if (path != "")
-                {
-                    try
-                    {
-                        lrc = new myLrc(path);
-                        richTextBox1.Text = lrc.data;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                }
+                tLBStatus.Text = "当前播放:" + info.remark + "  播放列表:" + treeView1.SelectedNode.Text + "  " + Convert.ToString(index + 1) + "/" + myplayer.NumOfMusic;
+                notifyIcon1.Text = tLBStatus.Text.Length > 63 ? tLBStatus.Text.Substring(0, 61) + ".." : tLBStatus.Text;
             }
         }
 
@@ -387,10 +352,6 @@ namespace MusicBox
             {
                 tBtnPlay.Image = global::MusicBox.Properties.Resources.pause;
                 tBtnPlay.Text = "暂停";
-                if (lrc != null)
-                {
-                    timerLrc.Start();
-                }
             }
             else
             {
@@ -406,23 +367,6 @@ namespace MusicBox
             int nextPlay = myplayer.NextPlay(modeType);
             play(nextPlay);
         }
-
-        private void timerLrc_Tick(object sender, EventArgs e)
-        {
-            if (axWindowsMediaPlayer1.Ctlcontrols.currentPositionString != "")
-            {
-                string tm = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString.Substring(0, 2);
-                string ts = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString.Substring(3, 2);
-                string key = tm + ts;
-                label2.Text = tm + ":" + ts;
-                if (lrc.al.Contains(key))
-                {
-                    label1.Text = lrc.getText(lrc.al.IndexOf(key));
-                }
-            }
-        }
-
-
         #endregion
 
         private void 添加歌曲ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -442,55 +386,18 @@ namespace MusicBox
             }
         }
 
-        private void addPlay(string url, string rem)
+        private void addPlay(string path, string rem)
         {
-            myXml x = new myXml();
-            string remark = "";
-            string type = "";
-            int max = 0;
-
-            foreach (ListViewItem it in listView1.Items)
-            {
-                int id = Convert.ToInt16(it.Tag.ToString());
-                if (id > max)
-                {
-                    max = id;
-                }
-            }
-            max = max + 1;
-            IWMPMedia media = axWindowsMediaPlayer1.newMedia(url);
-            if (rem.Trim() == "")
-                remark = media.name;
-            else
-                remark = rem.Trim();
-            x.AddSong(treeView1.SelectedNode.Name, max, media.sourceURL, remark);
-            ListViewItem lit = new ListViewItem();
-            lit.Text = remark;
-            lit.SubItems.Add(media.sourceURL);
-            type = media.sourceURL;
-            type = getExt(type);
-            switch (type)
-            {
-                case ".mp3":
-                    lit.ImageIndex = 0;
-                    break;
-                case ".wma":
-                    lit.ImageIndex = 1;
-                    break;
-                default:
-                    lit.ImageIndex = 2;
-                    break;
-            }
-            lit.SubItems.Add(type);
-            lit.SubItems.Add("");
-            lit.Tag = max;
-            listView1.Items.Add(lit);
-            myplayer.AddFile(media.sourceURL);
+            IWMPMedia media = axWindowsMediaPlayer1.newMedia(path);
+            var remark = rem.Trim() == "" ? media.name : rem.Trim();
+            PlayInfo playInfo = PlayInfo.CreateNew(remark, media.sourceURL, media.getItemInfo("Album"), media.getItemInfo("Author"), media.durationString, "");
+            XmlConfig.AddSong(treeView1.SelectedNode.Name, playInfo);
+            listView1.Items.Add(CreateListViewItem(listView1.Items.Count + 1, playInfo));
+            myplayer.AddFile(playInfo);
         }
 
         private void 删除歌曲ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            myXml x = new myXml();
             if (treeView1.SelectedNode != null)
             {
                 string listid = treeView1.SelectedNode.Name;
@@ -500,8 +407,9 @@ namespace MusicBox
                     {
                         foreach (ListViewItem it in listView1.SelectedItems)
                         {
+                            var playInfo = it.Tag as PlayInfo;
                             myplayer.DelFile(it.Index);
-                            x.DelPlayer(listid, it.Tag.ToString());
+                            XmlConfig.DelPlayer(listid, playInfo.id);
                             listView1.Items.RemoveAt(it.Index);
                         }
                     }
@@ -509,48 +417,6 @@ namespace MusicBox
             }
         }
 
-        private void 属性ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (listView1.SelectedItems.Count > 0)
-            {
-                string listid = treeView1.SelectedNode.Name;
-                string id = listView1.SelectedItems[0].Tag.ToString();
-                myXml x = new myXml();
-                IWMPMedia media = axWindowsMediaPlayer1.newMedia(listView1.SelectedItems[0].SubItems[1].Text);
-                Form3 f = new Form3(media, listView1.SelectedItems[0].SubItems[1].Text, listView1.SelectedItems[0].SubItems[2].Text);
-                if (f.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        x.UpdRemark(listid, id, f.txtRemark.Text.Trim());
-                        listView1.SelectedItems[0].SubItems[1].Text = f.txtRemark.Text.Trim();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-                }
-            }
-        }
-
-        private void 关联歌词ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (listView1.SelectedItems.Count == 1)
-            {
-                myXml xml = new myXml();
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Title = "选择歌词文件";
-                ofd.Filter = "歌词文件 *.lrc|*.lrc";
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    string listid = treeView1.SelectedNode.Name;
-                    string id = listView1.SelectedItems[0].Tag.ToString();
-                    xml.UpdLrc(listid, id, ofd.FileName);
-                    listView1.SelectedItems[0].SubItems[3].Text = ofd.FileName;
-                }
-            }
-        }
 
         private void 播放列表ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -567,9 +433,6 @@ namespace MusicBox
         private void cMSListView_Opening(object sender, CancelEventArgs e)
         {
             删除歌曲ToolStripMenuItem.Visible = listView1.SelectedItems.Count > 0;
-            关联歌词ToolStripMenuItem.Visible = listView1.SelectedItems.Count == 1;
-            属性ToolStripMenuItem.Visible = listView1.SelectedItems.Count == 1;
-            toolStripSeparator2.Visible = listView1.SelectedItems.Count == 1;
             MoveToolStripMenuItem.Visible = listView1.SelectedItems.Count > 0;
         }
 
@@ -657,19 +520,27 @@ namespace MusicBox
         private void search(string name)
         {
             Regex rx = new Regex(@"^.*" + name + ".*$", RegexOptions.IgnoreCase);
-            var select = -1;
+            List<int> find = new List<int>();
             for (int i = 0; i < listView1.Items.Count; i++)
             {
                 ListViewItem it = listView1.Items[i];
                 it.Selected = false;
-                if (rx.IsMatch(it.Text))
+                if (rx.IsMatch(it.SubItems[1].Text))
                 {
                     it.Selected = true;
-                    select = i;
+                    find.Add(i + 1);
                 }
             }
-            if (select >= 0)
-                listView1.EnsureVisible(select);
+            if (find.Count > 0)
+            {
+                listView1.EnsureVisible(find[find.Count - 1]);
+                var s = "";
+                foreach (var i in find)
+                    s += i.ToString() + ",";
+                if (s.Length > 0)
+                    s = s.Substring(0, s.Length - 1);
+                MessageBox.Show(string.Format("已查到{0}，在序号{1}中", name, s));
+            }
             else
                 MessageBox.Show("未查找到任何项!");
         }
@@ -702,7 +573,6 @@ namespace MusicBox
 
         private void MoveToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            myXml x = new myXml();
             ToolStripItem it = e.ClickedItem;
             string listid = it.Tag.ToString();
             if (listView1.SelectedItems.Count > 0)
@@ -710,9 +580,10 @@ namespace MusicBox
 
                 foreach (ListViewItem vit in listView1.SelectedItems)
                 {
-                    x.AddSong(listid, vit.SubItems[1].Text, vit.SubItems[0].Text, vit.SubItems[3].Text);
+                    var playInfo = vit.Tag as PlayInfo;
+                    XmlConfig.AddSong(listid, playInfo);
                     myplayer.DelFile(vit.Index);
-                    x.DelPlayer(treeView1.SelectedNode.Name, vit.Tag.ToString());
+                    XmlConfig.DelPlayer(treeView1.SelectedNode.Name, playInfo.id);
                     listView1.Items.RemoveAt(vit.Index);
                 }
 
@@ -805,14 +676,14 @@ namespace MusicBox
 
         private void btnWebAllMove_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
+            if (lvWebList.Items.Count == 0)
+                return;
             var listid = e.ClickedItem.Tag.ToString();   //播放列表id
             List<SongInfo> songs = new List<SongInfo>();
             foreach (ListViewItem select in lvWebList.Items)
             {
                 songs.Add(select.Tag as SongInfo);
             }
-            if (songs.Count == 0)
-                return;
             SongsProgress progress = new SongsProgress(songs);
             progress.AddSongs(this, listid);
         }
@@ -857,6 +728,8 @@ namespace MusicBox
 
         private void btnWebAllDown_Click(object sender, EventArgs e)
         {
+            if (lvWebList.Items.Count == 0)
+                return;
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == DialogResult.OK)
             {
@@ -891,7 +764,7 @@ namespace MusicBox
 
         private void listView1_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 e.Effect = DragDropEffects.Move;
             }
