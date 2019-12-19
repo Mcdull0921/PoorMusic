@@ -164,6 +164,11 @@ namespace MusicBox
         {
             if (treeView1.SelectedNode != null)
             {
+                if (treeView1.Nodes.Count == 1)
+                {
+                    MessageBox.Show("请至少保留一个播放列表！");
+                    return;
+                }
                 if (MessageBox.Show("确定要删除播放列表“" + treeView1.SelectedNode.Text + "”及里面的歌曲吗？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     if (treeView1.SelectedNode != null)
@@ -675,6 +680,21 @@ namespace MusicBox
         private void cmsWebListView_Opening(object sender, CancelEventArgs e)
         {
             btnWebDown.Enabled = btnWebMove.Enabled = this.lvWebList.SelectedItems.Count > 0;
+            btnPlayWeb.Visible = this.lvWebList.SelectedItems.Count == 1;
+        }
+
+        private void lvWebList_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            btnPlayWeb_Click(null, null);
+        }
+
+        private void btnPlayWeb_Click(object sender, EventArgs e)
+        {
+            if (lvWebList.SelectedItems.Count == 1)
+            {
+                SongsProgress.Get(this).AddSong(lvWebList.SelectedItems[0].Tag as SongInfo, treeView1.SelectedNode.Name);
+                play(listView1.Items.Count - 1);
+            }
         }
 
         private void btnWebAllMove_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -775,7 +795,7 @@ namespace MusicBox
             var items = getItems();
             if (items.Count == 0)
             {
-                MessageBox.Show("所有歌曲都已下载完毕！");
+                MessageBox.Show("所有歌曲都已经下载！");
                 return;
             }
             foreach (var item in items)

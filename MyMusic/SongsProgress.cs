@@ -46,6 +46,13 @@ namespace MusicBox
             this.owner = owner;
         }
 
+        public void AddSong(SongInfo s, string listid)
+        {
+            List<PlayInfo> res = new List<PlayInfo>() { PlayInfo.CreateNew(s.name, "kw:" + s.rid, s.album, s.artist, s.songTimeMinutes, "") };
+            XmlConfig.AddSongs(listid, res);
+            owner.bindListView();
+        }
+
         public void AddSongs(List<SongInfo> songs, string listid)
         {
             List<PlayInfo> res = new List<PlayInfo>();

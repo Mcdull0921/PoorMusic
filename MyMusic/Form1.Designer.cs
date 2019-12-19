@@ -49,11 +49,11 @@
             this.tBtnPre = new System.Windows.Forms.ToolStripButton();
             this.tBtnNext = new System.Windows.Forms.ToolStripButton();
             this.tBtnSearch = new System.Windows.Forms.ToolStripButton();
+            this.btnChangeDownload = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.txtDownloadPath = new System.Windows.Forms.ToolStripTextBox();
             this.btnChooseDownDir = new System.Windows.Forms.ToolStripButton();
-            this.btnChangeDownload = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tLBStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelSplit = new System.Windows.Forms.ToolStripStatusLabel();
@@ -127,6 +127,7 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.退出ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
+            this.btnPlayWeb = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -314,6 +315,15 @@
             this.tBtnSearch.Text = "查找";
             this.tBtnSearch.Click += new System.EventHandler(this.tBtnSearch_Click);
             // 
+            // btnChangeDownload
+            // 
+            this.btnChangeDownload.Image = ((System.Drawing.Image)(resources.GetObject("btnChangeDownload.Image")));
+            this.btnChangeDownload.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnChangeDownload.Name = "btnChangeDownload";
+            this.btnChangeDownload.Size = new System.Drawing.Size(97, 28);
+            this.btnChangeDownload.Text = "边听边下";
+            this.btnChangeDownload.Click += new System.EventHandler(this.btnChangeDownload_Click);
+            // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
@@ -341,15 +351,6 @@
             this.btnChooseDownDir.Text = "选择";
             this.btnChooseDownDir.Click += new System.EventHandler(this.btnChooseDownDir_Click);
             // 
-            // btnChangeDownload
-            // 
-            this.btnChangeDownload.Image = ((System.Drawing.Image)(resources.GetObject("btnChangeDownload.Image")));
-            this.btnChangeDownload.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnChangeDownload.Name = "btnChangeDownload";
-            this.btnChangeDownload.Size = new System.Drawing.Size(97, 28);
-            this.btnChangeDownload.Text = "边听边下";
-            this.btnChangeDownload.Click += new System.EventHandler(this.btnChangeDownload_Click);
-            // 
             // statusStrip1
             // 
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
@@ -373,7 +374,7 @@
             // toolStripStatusLabelSplit
             // 
             this.toolStripStatusLabelSplit.Name = "toolStripStatusLabelSplit";
-            this.toolStripStatusLabelSplit.Size = new System.Drawing.Size(769, 20);
+            this.toolStripStatusLabelSplit.Size = new System.Drawing.Size(873, 20);
             this.toolStripStatusLabelSplit.Spring = true;
             // 
             // downloadProgressBar
@@ -673,7 +674,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(715, 582);
+            this.tabPage3.Size = new System.Drawing.Size(819, 582);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "网络曲库";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -695,10 +696,11 @@
             this.lvWebList.Location = new System.Drawing.Point(0, 27);
             this.lvWebList.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.lvWebList.Name = "lvWebList";
-            this.lvWebList.Size = new System.Drawing.Size(715, 514);
+            this.lvWebList.Size = new System.Drawing.Size(819, 514);
             this.lvWebList.TabIndex = 7;
             this.lvWebList.UseCompatibleStateImageBehavior = false;
             this.lvWebList.View = System.Windows.Forms.View.Details;
+            this.lvWebList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lvWebList_MouseDoubleClick);
             // 
             // columnHeader10
             // 
@@ -736,19 +738,20 @@
             // 
             this.cmsWebListView.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.cmsWebListView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnPlayWeb,
             this.btnWebMove,
             this.btnWebAllMove,
             this.toolStripSeparator7,
             this.btnWebDown,
             this.btnWebAllDown});
             this.cmsWebListView.Name = "cmsWebListView";
-            this.cmsWebListView.Size = new System.Drawing.Size(169, 106);
+            this.cmsWebListView.Size = new System.Drawing.Size(211, 158);
             this.cmsWebListView.Opening += new System.ComponentModel.CancelEventHandler(this.cmsWebListView_Opening);
             // 
             // btnWebMove
             // 
             this.btnWebMove.Name = "btnWebMove";
-            this.btnWebMove.Size = new System.Drawing.Size(168, 24);
+            this.btnWebMove.Size = new System.Drawing.Size(210, 24);
             this.btnWebMove.Text = "添加选择歌曲";
             this.btnWebMove.DropDownOpening += new System.EventHandler(this.btnWebMove_DropDownOpening);
             this.btnWebMove.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.btnWebMove_DropDownItemClicked);
@@ -756,7 +759,7 @@
             // btnWebAllMove
             // 
             this.btnWebAllMove.Name = "btnWebAllMove";
-            this.btnWebAllMove.Size = new System.Drawing.Size(168, 24);
+            this.btnWebAllMove.Size = new System.Drawing.Size(210, 24);
             this.btnWebAllMove.Text = "添加全部歌曲";
             this.btnWebAllMove.DropDownOpening += new System.EventHandler(this.btnWebMove_DropDownOpening);
             this.btnWebAllMove.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.btnWebAllMove_DropDownItemClicked);
@@ -764,19 +767,19 @@
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(207, 6);
             // 
             // btnWebDown
             // 
             this.btnWebDown.Name = "btnWebDown";
-            this.btnWebDown.Size = new System.Drawing.Size(168, 24);
+            this.btnWebDown.Size = new System.Drawing.Size(210, 24);
             this.btnWebDown.Text = "下载选择歌曲";
             this.btnWebDown.Click += new System.EventHandler(this.btnWebDown_Click);
             // 
             // btnWebAllDown
             // 
             this.btnWebAllDown.Name = "btnWebAllDown";
-            this.btnWebAllDown.Size = new System.Drawing.Size(168, 24);
+            this.btnWebAllDown.Size = new System.Drawing.Size(210, 24);
             this.btnWebAllDown.Text = "下载全部歌曲";
             this.btnWebAllDown.Click += new System.EventHandler(this.btnWebAllDown_Click);
             // 
@@ -788,7 +791,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(715, 27);
+            this.panel1.Size = new System.Drawing.Size(819, 27);
             this.panel1.TabIndex = 3;
             // 
             // txtWebSearch
@@ -814,7 +817,7 @@
             this.txtWebSearch.PromptFont = new System.Drawing.Font("宋体", 9F);
             this.txtWebSearch.PromptText = "请输入关键词..";
             this.txtWebSearch.RegexPattern = "";
-            this.txtWebSearch.Size = new System.Drawing.Size(687, 25);
+            this.txtWebSearch.Size = new System.Drawing.Size(791, 25);
             this.txtWebSearch.TabIndex = 1;
             this.txtWebSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtWebSearch_KeyDown);
             // 
@@ -824,7 +827,7 @@
             this.btnWebSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnWebSearch.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnWebSearch.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnWebSearch.Location = new System.Drawing.Point(687, 0);
+            this.btnWebSearch.Location = new System.Drawing.Point(791, 0);
             this.btnWebSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnWebSearch.Name = "btnWebSearch";
             this.btnWebSearch.Size = new System.Drawing.Size(28, 27);
@@ -842,7 +845,7 @@
             this.ucPager.PageIndex = 1;
             this.ucPager.PageModel = HZH_Controls.Controls.PageModel.PageCount;
             this.ucPager.PageSize = 30;
-            this.ucPager.Size = new System.Drawing.Size(715, 41);
+            this.ucPager.Size = new System.Drawing.Size(819, 41);
             this.ucPager.StartIndex = 0;
             this.ucPager.TabIndex = 4;
             this.ucPager.ShowSourceChanged += new HZH_Controls.Controls.PageControlEventHandler(this.ucPager_ShowSourceChanged);
@@ -987,6 +990,14 @@
             this.axWindowsMediaPlayer1.TabIndex = 4;
             this.axWindowsMediaPlayer1.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(this.axWindowsMediaPlayer1_PlayStateChange);
             // 
+            // btnPlayWeb
+            // 
+            this.btnPlayWeb.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnPlayWeb.Name = "btnPlayWeb";
+            this.btnPlayWeb.Size = new System.Drawing.Size(210, 24);
+            this.btnPlayWeb.Text = "播放";
+            this.btnPlayWeb.Click += new System.EventHandler(this.btnPlayWeb_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -1126,6 +1137,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelSplit;
         public System.Windows.Forms.ToolStripProgressBar downloadProgressBar;
         private System.Windows.Forms.ToolStripButton btnChangeDownload;
+        private System.Windows.Forms.ToolStripMenuItem btnPlayWeb;
     }
 }
 
