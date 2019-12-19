@@ -11,6 +11,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using MusicLibrary;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace MusicBox
 {
@@ -28,7 +29,7 @@ namespace MusicBox
             {
                 treeView1.SelectedNode = treeView1.Nodes[0];
             }
-            modeType = XmlConfig.GetPlayMode();
+            modeType = XmlConfig.PlayMode;
         }
 
         public Form1()
@@ -83,11 +84,10 @@ namespace MusicBox
             }
             if (axWindowsMediaPlayer1.currentMedia != null)
             {
-                string url = axWindowsMediaPlayer1.currentMedia.sourceURL;
                 foreach (ListViewItem it in listView1.Items)
                 {
                     it.BackColor = Color.White;
-                    if (((PlayInfo)it.Tag).url == url)
+                    if (((PlayInfo)it.Tag).currentUrl == axWindowsMediaPlayer1.currentMedia.sourceURL)
                     {
                         it.BackColor = Color.YellowGreen;
                         break;
@@ -224,31 +224,31 @@ namespace MusicBox
         private void 顺序播放ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 0;
-            XmlConfig.SetPlayMode(modeType);
+            XmlConfig.PlayMode = modeType;
         }
 
         private void 循环播放ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 1;
-            XmlConfig.SetPlayMode(modeType);
+            XmlConfig.PlayMode = modeType;
         }
 
         private void 单曲循环ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 2;
-            XmlConfig.SetPlayMode(modeType);
+            XmlConfig.PlayMode = modeType;
         }
 
         private void 随机播放ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 3;
-            XmlConfig.SetPlayMode(modeType);
+            XmlConfig.PlayMode = modeType;
         }
 
         private void 单曲播放ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             modeType = 4;
-            XmlConfig.SetPlayMode(modeType);
+            XmlConfig.PlayMode = modeType;
         }
 
         private void tBtnPlay_Click(object sender, EventArgs e)
@@ -390,7 +390,7 @@ namespace MusicBox
         {
             IWMPMedia media = axWindowsMediaPlayer1.newMedia(path);
             var remark = rem.Trim() == "" ? media.name : rem.Trim();
-            PlayInfo playInfo = PlayInfo.CreateNew(remark, media.sourceURL, media.getItemInfo("Album"), media.getItemInfo("Author"), media.durationString, "");
+            PlayInfo playInfo = PlayInfo.CreateNew(remark, "", media.getItemInfo("Album"), media.getItemInfo("Author"), media.durationString, media.sourceURL);
             XmlConfig.AddSong(treeView1.SelectedNode.Name, playInfo);
             listView1.Items.Add(CreateListViewItem(listView1.Items.Count + 1, playInfo));
             myplayer.AddFile(playInfo);
@@ -434,6 +434,7 @@ namespace MusicBox
         {
             删除歌曲ToolStripMenuItem.Visible = listView1.SelectedItems.Count > 0;
             MoveToolStripMenuItem.Visible = listView1.SelectedItems.Count > 0;
+            btnDownSelect.Visible = listView1.SelectedItems.Count > 0;
         }
 
         private void 图标ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -549,6 +550,8 @@ namespace MusicBox
         {
             short width = Convert.ToInt16(Screen.PrimaryScreen.WorkingArea.Width - 150);
             short height = Convert.ToInt16(Screen.PrimaryScreen.WorkingArea.Height - 150);
+            txtDownloadPath.Text = XmlConfig.DownloadPath;
+            checkDownloadWithListen = XmlConfig.DownloadWithListen;
             //Sunisoft.IrisSkin.SkinEngine se = new Sunisoft.IrisSkin.SkinEngine();
             //se.SkinFile = "Wave.ssk";
         }
@@ -684,8 +687,7 @@ namespace MusicBox
             {
                 songs.Add(select.Tag as SongInfo);
             }
-            SongsProgress progress = new SongsProgress(songs);
-            progress.AddSongs(this, listid);
+            SongsProgress.Get(this).AddSongs(songs, listid);
         }
 
         private void btnWebMove_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -698,8 +700,7 @@ namespace MusicBox
                 {
                     songs.Add(select.Tag as SongInfo);
                 }
-                SongsProgress progress = new SongsProgress(songs);
-                progress.AddSongs(this, listid);
+                SongsProgress.Get(this).AddSongs(songs, listid);
             }
             else
                 MessageBox.Show("请先选择歌曲！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -707,41 +708,103 @@ namespace MusicBox
 
         private void btnWebDown_Click(object sender, EventArgs e)
         {
-            if (this.lvWebList.SelectedItems.Count > 0)
+            if (this.lvWebList.SelectedItems.Count == 0)
             {
-                FolderBrowserDialog fbd = new FolderBrowserDialog();
-                if (fbd.ShowDialog() == DialogResult.OK)
-                {
-                    DirectoryInfo dir = new DirectoryInfo(fbd.SelectedPath);
-                    List<SongInfo> songs = new List<SongInfo>();
-                    foreach (ListViewItem select in lvWebList.SelectedItems)
-                    {
-                        songs.Add(select.Tag as SongInfo);
-                    }
-                    SongsProgress progress = new SongsProgress(songs);
-                    progress.DownloadSongs(this, dir.FullName);
-                }
-            }
-            else
                 MessageBox.Show("请先选择歌曲！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Download(() => GetDownloadInfosBySongInfo(lvWebList.SelectedItems));
         }
 
         private void btnWebAllDown_Click(object sender, EventArgs e)
         {
             if (lvWebList.Items.Count == 0)
                 return;
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            if (fbd.ShowDialog() == DialogResult.OK)
+            Download(() => GetDownloadInfosBySongInfo(lvWebList.Items));
+        }
+
+        private List<DownloadInfo> GetDownloadInfosBySongInfo(IEnumerable items)
+        {
+            List<DownloadInfo> res = new List<DownloadInfo>();
+            foreach (ListViewItem select in items)
             {
-                DirectoryInfo dir = new DirectoryInfo(fbd.SelectedPath);
-                List<SongInfo> songs = new List<SongInfo>();
-                foreach (ListViewItem select in lvWebList.Items)
+                var s = select.Tag as SongInfo;
+                res.Add(new DownloadInfo
                 {
-                    songs.Add(select.Tag as SongInfo);
-                }
-                SongsProgress progress = new SongsProgress(songs);
-                progress.DownloadSongs(this, dir.FullName);
+                    url = "kw:" + s.rid,
+                    author = s.artist,
+                    name = s.name
+                });
             }
+            return res;
+        }
+
+        private List<DownloadInfo> GetDownloadInfosByPlayInfo(IEnumerable items)
+        {
+            List<DownloadInfo> res = new List<DownloadInfo>();
+            foreach (ListViewItem select in items)
+            {
+                var s = select.Tag as PlayInfo;
+                if (Player.IsVaild(s))
+                    continue;
+                res.Add(new DownloadInfo
+                {
+                    url = s.url,
+                    author = s.artist,
+                    name = s.remark,
+                    playInfo = s
+                });
+            }
+            return res;
+        }
+
+        private void Download(Func<List<DownloadInfo>> getItems)
+        {
+            string dirPath = XmlConfig.DownloadPath;
+            if (string.IsNullOrEmpty(dirPath) || !Directory.Exists(dirPath))
+            {
+                FolderBrowserDialog fbd = new FolderBrowserDialog();
+                if (fbd.ShowDialog() == DialogResult.OK)
+                {
+                    DirectoryInfo dir = new DirectoryInfo(fbd.SelectedPath);
+                    txtDownloadPath.Text = dirPath = XmlConfig.DownloadPath = dir.FullName;
+                }
+                else
+                    return;
+            }
+            var items = getItems();
+            if (items.Count == 0)
+            {
+                MessageBox.Show("所有歌曲都已下载完毕！");
+                return;
+            }
+            foreach (var item in items)
+            {
+                item.dirPath = dirPath;
+            }
+            SongsProgress.Get(this).DownloadSongs(items);
+        }
+
+        private void btnDownSelect_Click(object sender, EventArgs e)
+        {
+            if (this.listView1.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("请先选择歌曲！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Download(() => GetDownloadInfosByPlayInfo(listView1.SelectedItems));
+        }
+
+        private void btnDownAll_Click(object sender, EventArgs e)
+        {
+            if (listView1.Items.Count == 0)
+                return;
+            Download(() => GetDownloadInfosByPlayInfo(listView1.Items));
+        }
+
+        private void downloadProgressBar_Click(object sender, EventArgs e)
+        {
+            SongsProgress.Get(this).ShowPrgress();
         }
         #endregion
         #endregion
@@ -791,6 +854,34 @@ namespace MusicBox
         {
             Form5 f = new Form5();
             f.ShowDialog();
+        }
+
+        private void btnChooseDownDir_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if (fbd.ShowDialog() == DialogResult.OK)
+            {
+                DirectoryInfo dir = new DirectoryInfo(fbd.SelectedPath);
+                txtDownloadPath.Text = XmlConfig.DownloadPath = dir.FullName;
+            }
+        }
+
+        private void btnChangeDownload_Click(object sender, EventArgs e)
+        {
+            checkDownloadWithListen = !checkDownloadWithListen;
+        }
+
+        private bool checkDownloadWithListen
+        {
+            get
+            {
+                return XmlConfig.DownloadWithListen;
+            }
+            set
+            {
+                XmlConfig.DownloadWithListen = value;
+                btnChangeDownload.Image = value ? global::MusicBox.Properties.Resources.check : global::MusicBox.Properties.Resources.uncheck;
+            }
         }
     }
 }

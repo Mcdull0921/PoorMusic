@@ -10,29 +10,66 @@ namespace MusicBox
 {
     class XmlConfig
     {
-        private static string path = Application.StartupPath + @"\MyMusic.xml";
+        private static string PATH = Application.StartupPath + @"\MyMusic.xml";
 
-        public static void SetPlayMode(int mode)
+        public static int PlayMode
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-            XmlNode playMode = doc.DocumentElement.SelectSingleNode("PlayMode");
-            playMode.InnerText = mode.ToString();
-            doc.Save(path);
+            get
+            {
+                return int.Parse(GetSingleNode("PlayMode"));
+            }
+            set
+            {
+                SetSingleNode("PlayMode", value.ToString());
+            }
         }
 
-        public static int GetPlayMode()
+        public static string DownloadPath
+        {
+            get
+            {
+                return GetSingleNode("DownloadPath");
+            }
+            set
+            {
+                SetSingleNode("DownloadPath", value);
+            }
+        }
+
+        public static bool DownloadWithListen
+        {
+            get
+            {
+                return bool.Parse(GetSingleNode("DownloadWithListen"));
+            }
+            set
+            {
+                SetSingleNode("DownloadWithListen", value.ToString());
+            }
+        }
+
+        private static string GetSingleNode(string key)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-            XmlNode playMode = doc.DocumentElement.SelectSingleNode("PlayMode");
-            return Int32.Parse(playMode.InnerText);
+            doc.Load(PATH);
+            XmlNode n = doc.DocumentElement.SelectSingleNode(key);
+            return n.InnerText;
         }
+
+        private static void SetSingleNode(string key, string value)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(PATH);
+            XmlNode n = doc.DocumentElement.SelectSingleNode(key);
+            n.InnerText = value.ToString();
+            doc.Save(PATH);
+        }
+
 
         public static void AddPlayList(string name, string id)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            doc.Load(PATH);
             XmlNode playLists = doc.DocumentElement.SelectSingleNode("PlayLists");
             XmlElement playList = doc.CreateElement("PlayList");
             playList.SetAttribute("name", name);
@@ -45,7 +82,7 @@ namespace MusicBox
         {
             SaveToXmlFile();
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            doc.Load(PATH);
             XmlNode playLists = doc.DocumentElement.SelectSingleNode("PlayLists");
             XmlNodeList list = playLists.ChildNodes;
             return list;
@@ -54,7 +91,7 @@ namespace MusicBox
         public static PlayInfo[] GetPlayers(string listid)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            doc.Load(PATH);
             XmlNode playLists = doc.DocumentElement.SelectSingleNode("PlayLists");
             XmlNode node = playLists.SelectSingleNode("PlayList[@ID='" + listid + "']");
             XmlNodeList list = node.ChildNodes;
@@ -69,7 +106,8 @@ namespace MusicBox
                     album = list[i].SelectSingleNode("Album").InnerText.Trim(),
                     artist = list[i].SelectSingleNode("Artist").InnerText.Trim(),
                     time = list[i].SelectSingleNode("Time").InnerText.Trim(),
-                    sourceId = list[i].SelectSingleNode("SourceId").InnerText.Trim()
+                    path = list[i].SelectSingleNode("Path").InnerText.Trim(),
+                    currentUrl = list[i].SelectSingleNode("CurrentUrl").InnerText.Trim(),
                 };
             }
             return res;
@@ -79,65 +117,78 @@ namespace MusicBox
         public static void DelPlayList(string id)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            doc.Load(PATH);
             XmlNode playLists = doc.DocumentElement.SelectSingleNode("PlayLists");
             XmlNode node = playLists.SelectSingleNode("PlayList[@ID='" + id + "']");
             playLists.RemoveChild(node);
-            doc.Save(path);
+            doc.Save(PATH);
 
         }
 
         public static void DelPlayer(string listid, string id)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            doc.Load(PATH);
             XmlNode playLists = doc.DocumentElement.SelectSingleNode("PlayLists");
             XmlNode node = playLists.SelectSingleNode("PlayList[@ID='" + listid + "']");
             XmlNode player = node.SelectSingleNode("Player[@ID='" + id + "']");
             node.RemoveChild(player);
-            doc.Save(path);
+            doc.Save(PATH);
         }
 
         public static void UpdPlayList(string id, string name)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            doc.Load(PATH);
             XmlNode playLists = doc.DocumentElement.SelectSingleNode("PlayLists");
             XmlNode node = playLists.SelectSingleNode("PlayList[@ID='" + id + "']");
             node.Attributes["name"].Value = name.Trim();
-            doc.Save(path);
+            doc.Save(PATH);
         }
 
-        public static void UpdSongUrl(string id, string url)
+        public static void SetSongPath(string id, string path)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            doc.Load(PATH);
             XmlNode player = doc.DocumentElement.SelectSingleNode("PlayLists/PlayList/Player[@ID='" + id + "']");
             if (player != null)
             {
-                var n = player.SelectSingleNode("Url");
+                var n = player.SelectSingleNode("Path");
+                n.InnerText = path;
+                doc.Save(PATH);
+            }
+        }
+
+        public static void SetCurrentUrl(string id, string url)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(PATH);
+            XmlNode player = doc.DocumentElement.SelectSingleNode("PlayLists/PlayList/Player[@ID='" + id + "']");
+            if (player != null)
+            {
+                var n = player.SelectSingleNode("CurrentUrl");
                 n.InnerText = url;
-                doc.Save(path);
+                doc.Save(PATH);
             }
         }
 
         public static void AddSong(string listid, PlayInfo playInfo)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            doc.Load(PATH);
             AddSong(doc, listid, playInfo);
-            doc.Save(path);
+            doc.Save(PATH);
         }
 
         public static void AddSongs(string listid, List<PlayInfo> playInfos)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            doc.Load(PATH);
             foreach (var p in playInfos)
             {
                 AddSong(doc, listid, p);
             }
-            doc.Save(path);
+            doc.Save(PATH);
         }
 
         private static void AddSong(XmlDocument doc, string listid, PlayInfo playInfo)
@@ -151,7 +202,8 @@ namespace MusicBox
             player.AppendChild(CreateElement(doc, "Album", playInfo.album));
             player.AppendChild(CreateElement(doc, "Artist", playInfo.artist));
             player.AppendChild(CreateElement(doc, "Time", playInfo.time));
-            player.AppendChild(CreateElement(doc, "SourceId", playInfo.sourceId));
+            player.AppendChild(CreateElement(doc, "Path", playInfo.path));
+            player.AppendChild(CreateElement(doc, "CurrentUrl", playInfo.currentUrl));
             plist.AppendChild(player);
         }
 
@@ -174,11 +226,11 @@ namespace MusicBox
                 playList.SetAttribute("name", "[默认]");
                 playList.SetAttribute("ID", "1");
                 playLists.AppendChild(playList);
-                XmlNode playMode = doc.CreateElement("PlayMode");
-                playMode.InnerText = "0";
                 doc.DocumentElement.AppendChild(playLists);
-                doc.DocumentElement.AppendChild(playMode);
-                doc.Save(path);
+                doc.DocumentElement.AppendChild(CreateElement(doc, "PlayMode", "0"));
+                doc.DocumentElement.AppendChild(CreateElement(doc, "DownloadPath", @"d:\"));
+                doc.DocumentElement.AppendChild(CreateElement(doc, "DownloadWithListen", "false"));
+                doc.Save(PATH);
             }
         }
     }

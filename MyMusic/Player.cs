@@ -5,6 +5,7 @@ using WMPLib;
 using System.Collections;
 using MusicLibrary;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace MusicBox
 {
@@ -14,6 +15,7 @@ namespace MusicBox
         private AxWMPLib.AxWindowsMediaPlayer myPlayer;
         private List<PlayInfo> playList;
         private int currentPlay = -1;
+        private HttpHelper httpHelper;
 
 
         public int NumOfMusic
@@ -45,6 +47,7 @@ namespace MusicBox
         {
             myPlayer = mediaPlayer;
             playList = new List<PlayInfo>();
+            httpHelper = new HttpHelper();
         }
 
 
@@ -72,20 +75,63 @@ namespace MusicBox
             if (index >= 0 && index < playList.Count)
             {
                 var playInfo = playList[index];
-                if (!string.IsNullOrEmpty(playInfo.sourceId) && playInfo.sourceId.Length > 3 && playInfo.sourceId.Substring(0, 3).Equals("kw_"))
+                if (IsVaild(playInfo))
                 {
-                    var url = myPlayer.URL = await Task.Run(() => KuwoHelper.GetSongUrl(int.Parse(playInfo.sourceId.Substring(3))));
-                    XmlConfig.UpdSongUrl(playInfo.id, url);
+                    Play(playInfo.path, playInfo);
                 }
                 else
                 {
-                    myPlayer.URL = playInfo.url;
+                    var url = playInfo.url;
+                    if (IsKuwo(url))
+                    {
+                        url = await Task.Run(() => KuwoHelper.GetSongUrl(int.Parse(url.Substring(3))));
+                    }
+                    if (XmlConfig.DownloadWithListen)
+                    {
+                        var downInfo = new DownloadInfo
+                        {
+                            url = url,
+                            name = playInfo.remark,
+                            author = playInfo.artist,
+                            dirPath = XmlConfig.DownloadPath
+                        };
+                        await Task.Run(() => httpHelper.Download(downInfo));
+                        playInfo.path = downInfo.fullpath;
+                        XmlConfig.SetSongPath(playInfo.id, downInfo.fullpath);
+                        Play(playInfo.path, playInfo);
+                    }
+                    else
+                    {
+                        Play(url, playInfo);
+                    }
                 }
                 currentPlay = index;
                 myPlayer.Ctlcontrols.play();
             }
             else
                 myPlayer.Ctlcontrols.stop();
+        }
+
+        private void Play(string url, PlayInfo playInfo)
+        {
+            myPlayer.URL = url;
+            playInfo.currentUrl = url;
+            XmlConfig.SetCurrentUrl(playInfo.id, url);
+        }
+
+        /// <summary>
+        /// 本地歌曲是否有效
+        /// </summary>
+        /// <param name="playInfo"></param>
+        /// <returns></returns>
+        public static bool IsVaild(PlayInfo playInfo)
+        {
+            return !string.IsNullOrEmpty(playInfo.path) && File.Exists(playInfo.path);
+        }
+
+        public static bool IsKuwo(string url)
+        {
+            return !string.IsNullOrEmpty(url) && url.StartsWith("kw:");
         }
 
 

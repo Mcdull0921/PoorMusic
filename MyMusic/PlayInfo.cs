@@ -14,19 +14,20 @@ namespace MusicBox
         public string album { get; set; }
         public string artist { get; set; }
         public string time { get; set; }
-        public string sourceId { get; set; }
+        public string path { get; set; }
+        public string currentUrl { get; set; }
 
-        public static PlayInfo CreateNew(string name, string path, string album, string artist, string time, string sourceId)
+        public static PlayInfo CreateNew(string name, string url, string album, string artist, string time, string path)
         {
             return new PlayInfo()
             {
                 id = Guid.NewGuid().ToString(),
-                url = path,
+                url = url,
                 remark = name,
                 album = album,
                 artist = artist,
                 time = time,
-                sourceId = sourceId
+                path = path
             };
         }
     }
