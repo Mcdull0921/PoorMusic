@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("穷人音乐盒Beta版")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("一个穷人")]
+[assembly: AssemblyCompany("大健神")]
 [assembly: AssemblyProduct("PoorMusic")]
-[assembly: AssemblyCopyright("Copyright © 一个穷人 2009-2019")]
+[assembly: AssemblyCopyright("Copyright © 大健神 2009-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
