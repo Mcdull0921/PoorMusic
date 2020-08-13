@@ -456,14 +456,6 @@ namespace MusicBox
             listView1.View = View.Details;
         }
 
-        private void Form1_SizeChanged(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                notifyIcon1.Visible = true;
-                this.Visible = false;
-            }
-        }
 
         private void hidden()
         {
@@ -491,8 +483,10 @@ namespace MusicBox
             hidden();
         }
 
+        bool close = false;
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            close = true;
             Application.Exit();
         }
 
@@ -902,6 +896,21 @@ namespace MusicBox
                 XmlConfig.DownloadWithListen = value;
                 btnChangeDownload.Image = value ? global::MusicBox.Properties.Resources.check : global::MusicBox.Properties.Resources.uncheck;
             }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!close)
+            {
+                notifyIcon1.Visible = true;
+                this.Visible = false;
+                e.Cancel = true;
+            } 
+        }
+
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

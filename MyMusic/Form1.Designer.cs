@@ -100,6 +100,7 @@
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmsWebListView = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.btnPlayWeb = new System.Windows.Forms.ToolStripMenuItem();
             this.btnWebMove = new System.Windows.Forms.ToolStripMenuItem();
             this.btnWebAllMove = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -127,7 +128,6 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.退出ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
-            this.btnPlayWeb = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -151,7 +151,6 @@
             this.关于ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
             this.menuStrip1.Size = new System.Drawing.Size(967, 28);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
@@ -167,51 +166,51 @@
             this.toolStripSeparator3,
             this.退出ToolStripMenuItem});
             this.文件FToolStripMenuItem.Name = "文件FToolStripMenuItem";
-            this.文件FToolStripMenuItem.Size = new System.Drawing.Size(69, 24);
+            this.文件FToolStripMenuItem.Size = new System.Drawing.Size(71, 24);
             this.文件FToolStripMenuItem.Text = "文件(&F)";
             // 
             // 添加歌曲ToolStripMenuItem
             // 
             this.添加歌曲ToolStripMenuItem.Name = "添加歌曲ToolStripMenuItem";
-            this.添加歌曲ToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+            this.添加歌曲ToolStripMenuItem.Size = new System.Drawing.Size(167, 26);
             this.添加歌曲ToolStripMenuItem.Text = "添加歌曲";
             this.添加歌曲ToolStripMenuItem.Click += new System.EventHandler(this.添加歌曲ToolStripMenuItem_Click);
             // 
             // 添加文件夹ToolStripMenuItem
             // 
             this.添加文件夹ToolStripMenuItem.Name = "添加文件夹ToolStripMenuItem";
-            this.添加文件夹ToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+            this.添加文件夹ToolStripMenuItem.Size = new System.Drawing.Size(167, 26);
             this.添加文件夹ToolStripMenuItem.Text = "添加文件夹";
             this.添加文件夹ToolStripMenuItem.Click += new System.EventHandler(this.添加文件夹ToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(156, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(164, 6);
             // 
             // 添加列表ToolStripMenuItem
             // 
             this.添加列表ToolStripMenuItem.Name = "添加列表ToolStripMenuItem";
-            this.添加列表ToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+            this.添加列表ToolStripMenuItem.Size = new System.Drawing.Size(167, 26);
             this.添加列表ToolStripMenuItem.Text = "添加列表";
             this.添加列表ToolStripMenuItem.Click += new System.EventHandler(this.新列表ToolStripMenuItem_Click);
             // 
             // 删除列表ToolStripMenuItem1
             // 
             this.删除列表ToolStripMenuItem1.Name = "删除列表ToolStripMenuItem1";
-            this.删除列表ToolStripMenuItem1.Size = new System.Drawing.Size(159, 26);
+            this.删除列表ToolStripMenuItem1.Size = new System.Drawing.Size(167, 26);
             this.删除列表ToolStripMenuItem1.Text = "删除列表";
             this.删除列表ToolStripMenuItem1.Click += new System.EventHandler(this.删除列表ToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(156, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(164, 6);
             // 
             // 退出ToolStripMenuItem
             // 
             this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(167, 26);
             this.退出ToolStripMenuItem.Text = "退出(&X)";
             this.退出ToolStripMenuItem.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
             // 
@@ -221,7 +220,7 @@
             this.播放列表ToolStripMenuItem1,
             this.媒体播放器ToolStripMenuItem});
             this.播放列表ToolStripMenuItem.Name = "播放列表ToolStripMenuItem";
-            this.播放列表ToolStripMenuItem.Size = new System.Drawing.Size(106, 24);
+            this.播放列表ToolStripMenuItem.Size = new System.Drawing.Size(108, 24);
             this.播放列表ToolStripMenuItem.Text = "显示/隐藏(&S)";
             // 
             // 播放列表ToolStripMenuItem1
@@ -229,7 +228,7 @@
             this.播放列表ToolStripMenuItem1.Checked = true;
             this.播放列表ToolStripMenuItem1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.播放列表ToolStripMenuItem1.Name = "播放列表ToolStripMenuItem1";
-            this.播放列表ToolStripMenuItem1.Size = new System.Drawing.Size(159, 26);
+            this.播放列表ToolStripMenuItem1.Size = new System.Drawing.Size(167, 26);
             this.播放列表ToolStripMenuItem1.Text = "播放列表";
             this.播放列表ToolStripMenuItem1.Click += new System.EventHandler(this.播放列表ToolStripMenuItem_Click);
             // 
@@ -238,14 +237,14 @@
             this.媒体播放器ToolStripMenuItem.Checked = true;
             this.媒体播放器ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.媒体播放器ToolStripMenuItem.Name = "媒体播放器ToolStripMenuItem";
-            this.媒体播放器ToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+            this.媒体播放器ToolStripMenuItem.Size = new System.Drawing.Size(167, 26);
             this.媒体播放器ToolStripMenuItem.Text = "媒体播放器";
             this.媒体播放器ToolStripMenuItem.Click += new System.EventHandler(this.媒体播放器ToolStripMenuItem_Click);
             // 
             // 关于ToolStripMenuItem
             // 
             this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(72, 24);
+            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
             this.关于ToolStripMenuItem.Text = "关于(&A)";
             this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
             // 
@@ -337,6 +336,7 @@
             // 
             // txtDownloadPath
             // 
+            this.txtDownloadPath.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
             this.txtDownloadPath.Name = "txtDownloadPath";
             this.txtDownloadPath.ReadOnly = true;
             this.txtDownloadPath.Size = new System.Drawing.Size(150, 31);
@@ -358,10 +358,10 @@
             this.tLBStatus,
             this.toolStripStatusLabelSplit,
             this.downloadProgressBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 732);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 731);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 19, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(967, 25);
+            this.statusStrip1.Size = new System.Drawing.Size(967, 26);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -393,7 +393,7 @@
             this.treeView1.Location = new System.Drawing.Point(0, 59);
             this.treeView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(136, 611);
+            this.treeView1.Size = new System.Drawing.Size(136, 610);
             this.treeView1.TabIndex = 5;
             this.treeView1.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView1_AfterLabelEdit);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -442,7 +442,7 @@
             this.splitter1.Location = new System.Drawing.Point(136, 59);
             this.splitter1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(4, 611);
+            this.splitter1.Size = new System.Drawing.Size(4, 610);
             this.splitter1.TabIndex = 6;
             this.splitter1.TabStop = false;
             // 
@@ -455,7 +455,7 @@
             this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(827, 611);
+            this.tabControl1.Size = new System.Drawing.Size(827, 610);
             this.tabControl1.TabIndex = 7;
             // 
             // tabPage1
@@ -465,7 +465,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tabPage1.Size = new System.Drawing.Size(819, 582);
+            this.tabPage1.Size = new System.Drawing.Size(819, 581);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "播放列表";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -488,7 +488,7 @@
             this.listView1.Location = new System.Drawing.Point(4, 3);
             this.listView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(811, 576);
+            this.listView1.Size = new System.Drawing.Size(811, 575);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -575,35 +575,35 @@
             // 顺序播放ToolStripMenuItem
             // 
             this.顺序播放ToolStripMenuItem.Name = "顺序播放ToolStripMenuItem";
-            this.顺序播放ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.顺序播放ToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.顺序播放ToolStripMenuItem.Text = "顺序播放";
             this.顺序播放ToolStripMenuItem.Click += new System.EventHandler(this.顺序播放ToolStripMenuItem_Click);
             // 
             // 循环播放ToolStripMenuItem
             // 
             this.循环播放ToolStripMenuItem.Name = "循环播放ToolStripMenuItem";
-            this.循环播放ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.循环播放ToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.循环播放ToolStripMenuItem.Text = "循环播放";
             this.循环播放ToolStripMenuItem.Click += new System.EventHandler(this.循环播放ToolStripMenuItem_Click);
             // 
             // 单曲循环ToolStripMenuItem
             // 
             this.单曲循环ToolStripMenuItem.Name = "单曲循环ToolStripMenuItem";
-            this.单曲循环ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.单曲循环ToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.单曲循环ToolStripMenuItem.Text = "单曲循环";
             this.单曲循环ToolStripMenuItem.Click += new System.EventHandler(this.单曲循环ToolStripMenuItem_Click);
             // 
             // 随机播放ToolStripMenuItem
             // 
             this.随机播放ToolStripMenuItem.Name = "随机播放ToolStripMenuItem";
-            this.随机播放ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.随机播放ToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.随机播放ToolStripMenuItem.Text = "随机播放";
             this.随机播放ToolStripMenuItem.Click += new System.EventHandler(this.随机播放ToolStripMenuItem_Click);
             // 
             // 单曲播放ToolStripMenuItem1
             // 
             this.单曲播放ToolStripMenuItem1.Name = "单曲播放ToolStripMenuItem1";
-            this.单曲播放ToolStripMenuItem1.Size = new System.Drawing.Size(144, 26);
+            this.单曲播放ToolStripMenuItem1.Size = new System.Drawing.Size(152, 26);
             this.单曲播放ToolStripMenuItem1.Text = "单曲播放";
             this.单曲播放ToolStripMenuItem1.Click += new System.EventHandler(this.单曲播放ToolStripMenuItem_Click);
             // 
@@ -619,7 +619,7 @@
             // 图标ToolStripMenuItem
             // 
             this.图标ToolStripMenuItem.Name = "图标ToolStripMenuItem";
-            this.图标ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.图标ToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.图标ToolStripMenuItem.Text = "图标";
             this.图标ToolStripMenuItem.Click += new System.EventHandler(this.图标ToolStripMenuItem_Click);
             // 
@@ -628,7 +628,7 @@
             this.详细信息ToolStripMenuItem.Checked = true;
             this.详细信息ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.详细信息ToolStripMenuItem.Name = "详细信息ToolStripMenuItem";
-            this.详细信息ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.详细信息ToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.详细信息ToolStripMenuItem.Text = "详细信息";
             this.详细信息ToolStripMenuItem.Click += new System.EventHandler(this.详细信息ToolStripMenuItem_Click);
             // 
@@ -674,7 +674,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(819, 582);
+            this.tabPage3.Size = new System.Drawing.Size(819, 581);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "网络曲库";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -696,7 +696,7 @@
             this.lvWebList.Location = new System.Drawing.Point(0, 27);
             this.lvWebList.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.lvWebList.Name = "lvWebList";
-            this.lvWebList.Size = new System.Drawing.Size(819, 514);
+            this.lvWebList.Size = new System.Drawing.Size(819, 513);
             this.lvWebList.TabIndex = 7;
             this.lvWebList.UseCompatibleStateImageBehavior = false;
             this.lvWebList.View = System.Windows.Forms.View.Details;
@@ -745,13 +745,21 @@
             this.btnWebDown,
             this.btnWebAllDown});
             this.cmsWebListView.Name = "cmsWebListView";
-            this.cmsWebListView.Size = new System.Drawing.Size(211, 158);
+            this.cmsWebListView.Size = new System.Drawing.Size(169, 130);
             this.cmsWebListView.Opening += new System.ComponentModel.CancelEventHandler(this.cmsWebListView_Opening);
+            // 
+            // btnPlayWeb
+            // 
+            this.btnPlayWeb.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnPlayWeb.Name = "btnPlayWeb";
+            this.btnPlayWeb.Size = new System.Drawing.Size(168, 24);
+            this.btnPlayWeb.Text = "播放";
+            this.btnPlayWeb.Click += new System.EventHandler(this.btnPlayWeb_Click);
             // 
             // btnWebMove
             // 
             this.btnWebMove.Name = "btnWebMove";
-            this.btnWebMove.Size = new System.Drawing.Size(210, 24);
+            this.btnWebMove.Size = new System.Drawing.Size(168, 24);
             this.btnWebMove.Text = "添加选择歌曲";
             this.btnWebMove.DropDownOpening += new System.EventHandler(this.btnWebMove_DropDownOpening);
             this.btnWebMove.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.btnWebMove_DropDownItemClicked);
@@ -759,7 +767,7 @@
             // btnWebAllMove
             // 
             this.btnWebAllMove.Name = "btnWebAllMove";
-            this.btnWebAllMove.Size = new System.Drawing.Size(210, 24);
+            this.btnWebAllMove.Size = new System.Drawing.Size(168, 24);
             this.btnWebAllMove.Text = "添加全部歌曲";
             this.btnWebAllMove.DropDownOpening += new System.EventHandler(this.btnWebMove_DropDownOpening);
             this.btnWebAllMove.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.btnWebAllMove_DropDownItemClicked);
@@ -767,19 +775,19 @@
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(207, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(165, 6);
             // 
             // btnWebDown
             // 
             this.btnWebDown.Name = "btnWebDown";
-            this.btnWebDown.Size = new System.Drawing.Size(210, 24);
+            this.btnWebDown.Size = new System.Drawing.Size(168, 24);
             this.btnWebDown.Text = "下载选择歌曲";
             this.btnWebDown.Click += new System.EventHandler(this.btnWebDown_Click);
             // 
             // btnWebAllDown
             // 
             this.btnWebAllDown.Name = "btnWebAllDown";
-            this.btnWebAllDown.Size = new System.Drawing.Size(210, 24);
+            this.btnWebAllDown.Size = new System.Drawing.Size(168, 24);
             this.btnWebAllDown.Text = "下载全部歌曲";
             this.btnWebAllDown.Click += new System.EventHandler(this.btnWebAllDown_Click);
             // 
@@ -839,7 +847,7 @@
             this.ucPager.BackColor = System.Drawing.Color.White;
             this.ucPager.DataSource = ((System.Collections.Generic.List<object>)(resources.GetObject("ucPager.DataSource")));
             this.ucPager.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.ucPager.Location = new System.Drawing.Point(0, 541);
+            this.ucPager.Location = new System.Drawing.Point(0, 540);
             this.ucPager.Name = "ucPager";
             this.ucPager.PageCount = 0;
             this.ucPager.PageIndex = 1;
@@ -934,35 +942,35 @@
             // 顺序播放ToolStripMenuItem1
             // 
             this.顺序播放ToolStripMenuItem1.Name = "顺序播放ToolStripMenuItem1";
-            this.顺序播放ToolStripMenuItem1.Size = new System.Drawing.Size(144, 26);
+            this.顺序播放ToolStripMenuItem1.Size = new System.Drawing.Size(152, 26);
             this.顺序播放ToolStripMenuItem1.Text = "顺序播放";
             this.顺序播放ToolStripMenuItem1.Click += new System.EventHandler(this.顺序播放ToolStripMenuItem_Click);
             // 
             // 循环播放ToolStripMenuItem1
             // 
             this.循环播放ToolStripMenuItem1.Name = "循环播放ToolStripMenuItem1";
-            this.循环播放ToolStripMenuItem1.Size = new System.Drawing.Size(144, 26);
+            this.循环播放ToolStripMenuItem1.Size = new System.Drawing.Size(152, 26);
             this.循环播放ToolStripMenuItem1.Text = "循环播放";
             this.循环播放ToolStripMenuItem1.Click += new System.EventHandler(this.循环播放ToolStripMenuItem_Click);
             // 
             // 单曲循环ToolStripMenuItem1
             // 
             this.单曲循环ToolStripMenuItem1.Name = "单曲循环ToolStripMenuItem1";
-            this.单曲循环ToolStripMenuItem1.Size = new System.Drawing.Size(144, 26);
+            this.单曲循环ToolStripMenuItem1.Size = new System.Drawing.Size(152, 26);
             this.单曲循环ToolStripMenuItem1.Text = "单曲循环";
             this.单曲循环ToolStripMenuItem1.Click += new System.EventHandler(this.单曲循环ToolStripMenuItem_Click);
             // 
             // 随机播放ToolStripMenuItem1
             // 
             this.随机播放ToolStripMenuItem1.Name = "随机播放ToolStripMenuItem1";
-            this.随机播放ToolStripMenuItem1.Size = new System.Drawing.Size(144, 26);
+            this.随机播放ToolStripMenuItem1.Size = new System.Drawing.Size(152, 26);
             this.随机播放ToolStripMenuItem1.Text = "随机播放";
             this.随机播放ToolStripMenuItem1.Click += new System.EventHandler(this.随机播放ToolStripMenuItem_Click);
             // 
             // 单曲播放ToolStripMenuItem
             // 
             this.单曲播放ToolStripMenuItem.Name = "单曲播放ToolStripMenuItem";
-            this.单曲播放ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.单曲播放ToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.单曲播放ToolStripMenuItem.Text = "单曲播放";
             this.单曲播放ToolStripMenuItem.Click += new System.EventHandler(this.单曲播放ToolStripMenuItem_Click);
             // 
@@ -982,21 +990,13 @@
             // 
             this.axWindowsMediaPlayer1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.axWindowsMediaPlayer1.Enabled = true;
-            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(0, 670);
+            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(0, 669);
             this.axWindowsMediaPlayer1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
             this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
             this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(967, 62);
             this.axWindowsMediaPlayer1.TabIndex = 4;
             this.axWindowsMediaPlayer1.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(this.axWindowsMediaPlayer1_PlayStateChange);
-            // 
-            // btnPlayWeb
-            // 
-            this.btnPlayWeb.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnPlayWeb.Name = "btnPlayWeb";
-            this.btnPlayWeb.Size = new System.Drawing.Size(210, 24);
-            this.btnPlayWeb.Text = "播放";
-            this.btnPlayWeb.Click += new System.EventHandler(this.btnPlayWeb_Click);
             // 
             // Form1
             // 
@@ -1015,8 +1015,8 @@
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "Form1";
             this.Text = "穷人音乐盒Beta版 -- No VIP";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
