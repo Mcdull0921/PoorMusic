@@ -191,11 +191,30 @@ namespace MusicBox
             doc.Save(PATH);
         }
 
-        private static void AddSong(XmlDocument doc, string listid, PlayInfo playInfo)
+        public static void OrderSong(string listid, PlayInfo playInfo, PlayInfo beforeInsertItem)
         {
-            XmlElement player = doc.CreateElement("Player");
+            XmlDocument doc = new XmlDocument();
+            doc.Load(PATH);
             XmlNode playLists = doc.DocumentElement.SelectSingleNode("PlayLists");
             XmlNode plist = playLists.SelectSingleNode("PlayList[@ID='" + listid + "']");
+            XmlNode insert = CreateItem(doc, playInfo);
+            XmlNode item = plist.SelectSingleNode("Player[@ID='" + playInfo.id + "']");
+            XmlNode beforeItem = plist.SelectSingleNode("Player[@ID='" + beforeInsertItem.id + "']");
+            plist.InsertBefore(insert, beforeItem);
+            plist.RemoveChild(item);
+            doc.Save(PATH);
+        }
+
+        private static void AddSong(XmlDocument doc, string listid, PlayInfo playInfo)
+        {
+            XmlNode playLists = doc.DocumentElement.SelectSingleNode("PlayLists");
+            XmlNode plist = playLists.SelectSingleNode("PlayList[@ID='" + listid + "']");
+            plist.AppendChild(CreateItem(doc, playInfo));
+        }
+
+        private static XmlElement CreateItem(XmlDocument doc, PlayInfo playInfo)
+        {
+            XmlElement player = doc.CreateElement("Player");
             player.SetAttribute("ID", playInfo.id);
             player.AppendChild(CreateElement(doc, "Url", playInfo.url));
             player.AppendChild(CreateElement(doc, "Remark", playInfo.remark));
@@ -204,7 +223,7 @@ namespace MusicBox
             player.AppendChild(CreateElement(doc, "Time", playInfo.time));
             player.AppendChild(CreateElement(doc, "Path", playInfo.path));
             player.AppendChild(CreateElement(doc, "CurrentUrl", playInfo.currentUrl));
-            plist.AppendChild(player);
+            return player;
         }
 
         private static XmlElement CreateElement(XmlDocument doc, string key, string value)

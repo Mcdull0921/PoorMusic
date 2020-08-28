@@ -23,7 +23,7 @@ namespace MusicBox
         private void init()
         {
             InitializeComponent();
-            myplayer = new Player(axWindowsMediaPlayer1);
+            myplayer = new Player(axWindowsMediaPlayer1, listView1);
             bindTreeView();
             if (treeView1.Nodes.Count > 0)
             {
@@ -75,12 +75,10 @@ namespace MusicBox
         private void bindListView(string listid)
         {
             listView1.Items.Clear();
-            myplayer.Clear();
             var playInfos = XmlConfig.GetPlayers(treeView1.SelectedNode.Name);
             for (int i = 0; i < playInfos.Length; i++)
             {
                 listView1.Items.Add(CreateListViewItem(i + 1, playInfos[i]));
-                myplayer.AddFile(playInfos[i]);
             }
             if (axWindowsMediaPlayer1.currentMedia != null)
             {
@@ -176,7 +174,6 @@ namespace MusicBox
                         XmlConfig.DelPlayList(treeView1.SelectedNode.Name);
                         bindTreeView();
                         listView1.Items.Clear();
-                        myplayer.Clear();
                     }
                 }
             }
@@ -398,7 +395,6 @@ namespace MusicBox
             PlayInfo playInfo = PlayInfo.CreateNew(remark, "", media.getItemInfo("Album"), media.getItemInfo("Author"), media.durationString, media.sourceURL);
             XmlConfig.AddSong(treeView1.SelectedNode.Name, playInfo);
             listView1.Items.Add(CreateListViewItem(listView1.Items.Count + 1, playInfo));
-            myplayer.AddFile(playInfo);
         }
 
         private void 删除歌曲ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -408,16 +404,21 @@ namespace MusicBox
                 string listid = treeView1.SelectedNode.Name;
                 if (listView1.SelectedItems.Count > 0)
                 {
-                    if (MessageBox.Show("确定要删除所选中的歌曲吗？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    var result = MessageBox.Show("确定要删除所选中的歌曲吗，是否需要删除本地文件？选择是删除本地文件，选择否仅在列表中删除。", "提示", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                    if (result == DialogResult.Cancel)
+                        return;
+                    bool yes = result == DialogResult.Yes;
+                    foreach (ListViewItem it in listView1.SelectedItems)
                     {
-                        foreach (ListViewItem it in listView1.SelectedItems)
+                        var playInfo = it.Tag as PlayInfo;
+                        XmlConfig.DelPlayer(listid, playInfo.id);
+                        listView1.Items.RemoveAt(it.Index);
+                        if (yes && File.Exists(playInfo.path))
                         {
-                            var playInfo = it.Tag as PlayInfo;
-                            myplayer.DelFile(it.Index);
-                            XmlConfig.DelPlayer(listid, playInfo.id);
-                            listView1.Items.RemoveAt(it.Index);
+                            File.Delete(playInfo.path);
                         }
                     }
+                    refreshIndex();
                 }
             }
         }
@@ -579,16 +580,14 @@ namespace MusicBox
             string listid = it.Tag.ToString();
             if (listView1.SelectedItems.Count > 0)
             {
-
                 foreach (ListViewItem vit in listView1.SelectedItems)
                 {
                     var playInfo = vit.Tag as PlayInfo;
                     XmlConfig.AddSong(listid, playInfo);
-                    myplayer.DelFile(vit.Index);
                     XmlConfig.DelPlayer(treeView1.SelectedNode.Name, playInfo.id);
                     listView1.Items.RemoveAt(vit.Index);
                 }
-
+                refreshIndex();
             }
 
         }
@@ -839,31 +838,6 @@ namespace MusicBox
             item.Checked = true;
         }
 
-        private void listView1_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                e.Effect = DragDropEffects.Move;
-            }
-            else
-            {
-                e.Effect = DragDropEffects.None;
-            }
-        }
-
-        private void listView1_DragDrop(object sender, DragEventArgs e)
-        {
-            string[] fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
-            foreach (var name in fileNames)
-            {
-                FileInfo file = new FileInfo(name);
-                if (file.Extension == ".mp3" || file.Extension == ".wma" || file.Extension == ".wav")
-                {
-                    addPlay(file.FullName, "");
-                }
-            }
-        }
-
         private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form5 f = new Form5();
@@ -905,12 +879,107 @@ namespace MusicBox
                 notifyIcon1.Visible = true;
                 this.Visible = false;
                 e.Cancel = true;
-            } 
+            }
         }
 
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
 
         }
+
+        #region 列表排序
+        private void listView1_DragEnter(object sender, DragEventArgs e)
+        {
+            //if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            //{
+            //    e.Effect = DragDropEffects.Move;
+            //}
+            //else
+            //{
+            //    e.Effect = DragDropEffects.None;                
+            //}
+            e.Effect = e.AllowedEffect;
+        }
+
+        private void listView1_DragDrop(object sender, DragEventArgs e)
+        {
+            #region 拖动歌曲文件
+            //string[] fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+            //foreach (var name in fileNames)
+            //{
+            //    FileInfo file = new FileInfo(name);
+            //    if (file.Extension == ".mp3" || file.Extension == ".wma" || file.Extension == ".wav")
+            //    {
+            //        addPlay(file.FullName, "");
+            //    }
+            //}
+            #endregion
+
+            ListView lv = sender as ListView;
+            // 返回插入标记的索引值
+            int index = lv.InsertionMark.Index;
+            // 如果插入标记不可见，则退出.
+            if (index == -1)
+            {
+                return;
+            }
+            // 如果插入标记在项目的右面，使目标索引值加一
+            if (lv.InsertionMark.AppearsAfterItem)
+            {
+                index++;
+            }
+            // 返回拖拽项
+            ListViewItem item = (ListViewItem)e.Data.GetData(typeof(ListViewItem));
+
+            XmlConfig.OrderSong(treeView1.SelectedNode.Name, (PlayInfo)item.Tag, (PlayInfo)lv.Items[index].Tag);
+
+            //在目标索引位置插入一个拖拽项目的副本
+            lv.Items.Insert(index, (ListViewItem)item.Clone());
+            // 移除拖拽项目的原文件
+            lv.Items.Remove(item);
+            refreshIndex();
+
+            lv.InsertionMark.Index = -1;
+        }
+
+        private void listView1_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            ((ListView)sender).DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private void listView1_DragOver(object sender, DragEventArgs e)
+        {
+            ListView lv = sender as ListView;
+            // 获得鼠标坐标
+            Point point = lv.PointToClient(new Point(e.X, e.Y));
+            // 返回离鼠标最近的项目的索引
+            int index = lv.InsertionMark.NearestIndex(point);
+            // 确定光标不在拖拽项目上
+            if (index > -1)
+            {
+                lv.InsertionMark.AppearsAfterItem = false;
+            }
+            lv.InsertionMark.Index = index;
+        }
+
+        private void listView1_DragLeave(object sender, EventArgs e)
+        {
+            ((ListView)sender).InsertionMark.Index = -1;
+        }
+
+        private void refreshIndex()
+        {
+            bool setIndex = false;
+            foreach (ListViewItem item in listView1.Items)
+            {
+                item.SubItems[0].Text = (item.Index + 1).ToString();
+                if (!setIndex && ((PlayInfo)item.Tag).currentUrl == axWindowsMediaPlayer1.currentMedia.sourceURL)
+                {
+                    myplayer.CurrentPlay = item.Index;
+                    setIndex = true;
+                }
+            }
+        }
+        #endregion
     }
 }

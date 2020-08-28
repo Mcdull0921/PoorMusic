@@ -6,6 +6,7 @@ using System.Collections;
 using MusicLibrary;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows.Forms;
 
 namespace MusicBox
 {
@@ -13,16 +14,16 @@ namespace MusicBox
     {
 
         private AxWMPLib.AxWindowsMediaPlayer myPlayer;
-        private List<PlayInfo> playList;
+        // private List<PlayInfo> playList;
         private int currentPlay = -1;
         private HttpHelper httpHelper;
-
+        private ListView listView;
 
         public int NumOfMusic
         {
             get
             {
-                return playList.Count;
+                return listView.Items.Count;
             }
         }
 
@@ -40,41 +41,46 @@ namespace MusicBox
             {
                 return currentPlay;
             }
+            set
+            {
+                currentPlay = value;
+            }
         }
 
 
-        public Player(AxWMPLib.AxWindowsMediaPlayer mediaPlayer)
+        public Player(AxWMPLib.AxWindowsMediaPlayer mediaPlayer, ListView listView)
         {
             myPlayer = mediaPlayer;
-            playList = new List<PlayInfo>();
+            //playList = new List<PlayInfo>();
+            this.listView = listView;
             httpHelper = new HttpHelper();
         }
 
 
-        public void Clear()
-        {
-            playList.Clear();
-        }
+        //public void Clear()
+        //{
+        //    playList.Clear();
+        //}
 
-        public void AddFile(PlayInfo info)
-        {
-            playList.Add(info);
+        //public void AddFile(PlayInfo info)
+        //{
+        //    playList.Add(info);
 
-        }
+        //}
 
-        public void DelFile(int index)
-        {
-            if (playList.Count > 0)
-            {
-                playList.RemoveAt(index);
-            }
-        }
+        //public void DelFile(int index)
+        //{
+        //    if (playList.Count > 0)
+        //    {
+        //        playList.RemoveAt(index);
+        //    }
+        //}
 
         public async void Play(int index)
         {
-            if (index >= 0 && index < playList.Count)
+            if (index >= 0 && index < NumOfMusic)
             {
-                var playInfo = playList[index];
+                var playInfo = listView.Items[index].Tag as PlayInfo;
                 if (IsVaild(playInfo))
                 {
                     Play(playInfo.path, playInfo);

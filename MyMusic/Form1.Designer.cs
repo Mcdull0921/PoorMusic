@@ -492,8 +492,11 @@
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listView1_ItemDrag);
             this.listView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.listView1_DragDrop);
             this.listView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.listView1_DragEnter);
+            this.listView1.DragOver += new System.Windows.Forms.DragEventHandler(this.listView1_DragOver);
+            this.listView1.DragLeave += new System.EventHandler(this.listView1_DragLeave);
             this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
             // 
             // columnHeader11
@@ -534,27 +537,27 @@
             this.btnDownSelect,
             this.btnDownAll});
             this.cMSListView.Name = "cMSListView";
-            this.cMSListView.Size = new System.Drawing.Size(169, 202);
+            this.cMSListView.Size = new System.Drawing.Size(211, 230);
             this.cMSListView.Opening += new System.ComponentModel.CancelEventHandler(this.cMSListView_Opening);
             // 
             // 添加歌曲ToolStripMenuItem1
             // 
             this.添加歌曲ToolStripMenuItem1.Name = "添加歌曲ToolStripMenuItem1";
-            this.添加歌曲ToolStripMenuItem1.Size = new System.Drawing.Size(168, 24);
+            this.添加歌曲ToolStripMenuItem1.Size = new System.Drawing.Size(210, 24);
             this.添加歌曲ToolStripMenuItem1.Text = "添加歌曲";
             this.添加歌曲ToolStripMenuItem1.Click += new System.EventHandler(this.添加歌曲ToolStripMenuItem_Click);
             // 
             // 删除歌曲ToolStripMenuItem
             // 
             this.删除歌曲ToolStripMenuItem.Name = "删除歌曲ToolStripMenuItem";
-            this.删除歌曲ToolStripMenuItem.Size = new System.Drawing.Size(168, 24);
+            this.删除歌曲ToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.删除歌曲ToolStripMenuItem.Text = "删除歌曲";
             this.删除歌曲ToolStripMenuItem.Click += new System.EventHandler(this.删除歌曲ToolStripMenuItem_Click);
             // 
             // MoveToolStripMenuItem
             // 
             this.MoveToolStripMenuItem.Name = "MoveToolStripMenuItem";
-            this.MoveToolStripMenuItem.Size = new System.Drawing.Size(168, 24);
+            this.MoveToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.MoveToolStripMenuItem.Text = "移动歌曲";
             this.MoveToolStripMenuItem.DropDownOpening += new System.EventHandler(this.MoveToolStripMenuItem_DropDownOpening);
             this.MoveToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MoveToolStripMenuItem_DropDownItemClicked);
@@ -568,7 +571,7 @@
             this.随机播放ToolStripMenuItem,
             this.单曲播放ToolStripMenuItem1});
             this.ModeToolStripMenuItem.Name = "ModeToolStripMenuItem";
-            this.ModeToolStripMenuItem.Size = new System.Drawing.Size(168, 24);
+            this.ModeToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.ModeToolStripMenuItem.Text = "播放模式";
             this.ModeToolStripMenuItem.DropDownOpening += new System.EventHandler(this.ModeToolStripMenuItem_DropDownOpening);
             // 
@@ -613,13 +616,14 @@
             this.图标ToolStripMenuItem,
             this.详细信息ToolStripMenuItem});
             this.查看ToolStripMenuItem.Name = "查看ToolStripMenuItem";
-            this.查看ToolStripMenuItem.Size = new System.Drawing.Size(168, 24);
+            this.查看ToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.查看ToolStripMenuItem.Text = "查看";
+            this.查看ToolStripMenuItem.Visible = false;
             // 
             // 图标ToolStripMenuItem
             // 
             this.图标ToolStripMenuItem.Name = "图标ToolStripMenuItem";
-            this.图标ToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
+            this.图标ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.图标ToolStripMenuItem.Text = "图标";
             this.图标ToolStripMenuItem.Click += new System.EventHandler(this.图标ToolStripMenuItem_Click);
             // 
@@ -628,33 +632,33 @@
             this.详细信息ToolStripMenuItem.Checked = true;
             this.详细信息ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.详细信息ToolStripMenuItem.Name = "详细信息ToolStripMenuItem";
-            this.详细信息ToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
+            this.详细信息ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.详细信息ToolStripMenuItem.Text = "详细信息";
             this.详细信息ToolStripMenuItem.Click += new System.EventHandler(this.详细信息ToolStripMenuItem_Click);
             // 
             // btnRefresh
             // 
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(168, 24);
+            this.btnRefresh.Size = new System.Drawing.Size(210, 24);
             this.btnRefresh.Text = "刷新";
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(207, 6);
             // 
             // btnDownSelect
             // 
             this.btnDownSelect.Name = "btnDownSelect";
-            this.btnDownSelect.Size = new System.Drawing.Size(168, 24);
+            this.btnDownSelect.Size = new System.Drawing.Size(210, 24);
             this.btnDownSelect.Text = "下载选择歌曲";
             this.btnDownSelect.Click += new System.EventHandler(this.btnDownSelect_Click);
             // 
             // btnDownAll
             // 
             this.btnDownAll.Name = "btnDownAll";
-            this.btnDownAll.Size = new System.Drawing.Size(168, 24);
+            this.btnDownAll.Size = new System.Drawing.Size(210, 24);
             this.btnDownAll.Text = "下载整个列表";
             this.btnDownAll.Click += new System.EventHandler(this.btnDownAll_Click);
             // 
