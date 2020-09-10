@@ -56,11 +56,13 @@ namespace MusicBox
         private void bindTreeView()
         {
             treeView1.Nodes.Clear();
+            TreeNode root = new TreeNode("全部歌曲");
+            root.Name = "-1";
+            treeView1.Nodes.Add(root);
             XmlNodeList list = XmlConfig.GetPlayList();
             for (int i = 0; i < list.Count; i++)
             {
                 treeView1.Nodes.Add(list[i].Attributes["ID"].Value, list[i].Attributes["name"].Value);
-
             }
         }
 
@@ -102,6 +104,8 @@ namespace MusicBox
             it.SubItems.Add(playInfo.artist);
             it.SubItems.Add(playInfo.album);
             it.SubItems.Add(playInfo.time);
+            it.SubItems.Add(Player.IsVaild(playInfo) ? "本地" : "否");
+            it.SubItems.Add(playInfo.path);
             it.Tag = playInfo;
             var type = getExt(playInfo.url);
             switch (type)
@@ -140,10 +144,9 @@ namespace MusicBox
         private void 新列表ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string name = "新列表";
-            int max = 1;
+            int max = 0;
             if (treeView1.Nodes.Count > 0)
             {
-
                 foreach (TreeNode t in treeView1.Nodes)
                 {
                     int id = Convert.ToInt16(t.Name);
@@ -160,28 +163,26 @@ namespace MusicBox
 
         private void 删除列表ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (treeView1.SelectedNode != null)
+            if (treeView1.SelectedNode != null && int.Parse(treeView1.SelectedNode.Name) > 0)
             {
                 if (treeView1.Nodes.Count == 1)
                 {
                     MessageBox.Show("请至少保留一个播放列表！");
                     return;
                 }
-                if (MessageBox.Show("确定要删除播放列表“" + treeView1.SelectedNode.Text + "”及里面的歌曲吗？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show("确定要删除播放列表“" + treeView1.SelectedNode.Text + "”及里面的歌曲吗？仅逻辑删除", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
-                    if (treeView1.SelectedNode != null)
-                    {
-                        XmlConfig.DelPlayList(treeView1.SelectedNode.Name);
-                        bindTreeView();
-                        listView1.Items.Clear();
-                    }
+                    XmlConfig.DelPlayList(treeView1.SelectedNode.Name);
+                    bindTreeView();
+                    listView1.Items.Clear();
+                    treeView1.SelectedNode = treeView1.Nodes[0];
                 }
             }
         }
 
         private void 重命名ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (treeView1.SelectedNode != null)
+            if (treeView1.SelectedNode != null && int.Parse(treeView1.SelectedNode.Name) > 0)
             {
                 treeView1.SelectedNode.BeginEdit();
             }
@@ -190,10 +191,16 @@ namespace MusicBox
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             bindListView(treeView1.SelectedNode.Name);
+            txtDownloadPath.Text = XmlConfig.GetDownloadPath(treeView1.SelectedNode.Name);
         }
 
         private void treeView1_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
+            if (treeView1.SelectedNode.Name.Equals("-1"))
+            {
+                e.CancelEdit = true;
+                return;
+            }
             string name = "";
             if (e.Label != null) name = e.Label;
             if (name.Trim() == "" || e.Label == null)
@@ -206,17 +213,17 @@ namespace MusicBox
 
         private void cMSTreeView_Opening(object sender, CancelEventArgs e)
         {
-            if (treeView1.SelectedNode == null)
-            {
-                删除列表ToolStripMenuItem.Visible = false;
-                toolStripSeparator1.Visible = false;
-                重命名ToolStripMenuItem.Visible = false;
-            }
-            else
+            if (treeView1.SelectedNode != null && int.Parse(treeView1.SelectedNode.Name) > 0)
             {
                 删除列表ToolStripMenuItem.Visible = true;
                 toolStripSeparator1.Visible = true;
                 重命名ToolStripMenuItem.Visible = true;
+            }
+            else
+            {
+                删除列表ToolStripMenuItem.Visible = false;
+                toolStripSeparator1.Visible = false;
+                重命名ToolStripMenuItem.Visible = false;
             }
         }
 
@@ -281,7 +288,8 @@ namespace MusicBox
         /// <param name="index">歌曲列表的索引</param>
         private void play(int index)
         {
-            myplayer.Play(index);
+            string downloadPath = XmlConfig.GetDownloadPath(this.treeView1.SelectedNode.Name);
+            myplayer.Play(index, downloadPath, checkDownloadBest ? 320 : 128);
             foreach (ListViewItem it in listView1.Items)
             {
                 it.BackColor = Color.White;
@@ -404,14 +412,14 @@ namespace MusicBox
                 string listid = treeView1.SelectedNode.Name;
                 if (listView1.SelectedItems.Count > 0)
                 {
-                    var result = MessageBox.Show("确定要删除所选中的歌曲吗，是否需要删除本地文件？选择是删除本地文件，选择否仅在列表中删除。", "提示", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                    var result = MessageBox.Show("确定要删除所选中的歌曲吗，是否需要删除本地文件？选择“是”删除本地文件，选择“否”仅在列表中删除。", "提示", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                     if (result == DialogResult.Cancel)
                         return;
                     bool yes = result == DialogResult.Yes;
                     foreach (ListViewItem it in listView1.SelectedItems)
                     {
                         var playInfo = it.Tag as PlayInfo;
-                        XmlConfig.DelPlayer(listid, playInfo.id);
+                        XmlConfig.DelPlayer(playInfo.id);
                         listView1.Items.RemoveAt(it.Index);
                         if (yes && File.Exists(playInfo.path))
                         {
@@ -550,8 +558,9 @@ namespace MusicBox
         {
             short width = Convert.ToInt16(Screen.PrimaryScreen.WorkingArea.Width - 150);
             short height = Convert.ToInt16(Screen.PrimaryScreen.WorkingArea.Height - 150);
-            txtDownloadPath.Text = XmlConfig.DownloadPath;
             checkDownloadWithListen = XmlConfig.DownloadWithListen;
+            checkDownloadBest = XmlConfig.DownloadBest;
+            //txtDownloadPath.Text = XmlConfig.DownloadPath;
             //Sunisoft.IrisSkin.SkinEngine se = new Sunisoft.IrisSkin.SkinEngine();
             //se.SkinFile = "Wave.ssk";
         }
@@ -563,7 +572,7 @@ namespace MusicBox
             {
                 if (treeView1.SelectedNode != null)
                 {
-                    if (node.Text != treeView1.SelectedNode.Text && node.Name != treeView1.SelectedNode.Name)
+                    if (!node.Name.Equals("-1") && node.Name != treeView1.SelectedNode.Name)
                     {
                         ToolStripMenuItem it = new ToolStripMenuItem();
                         it.Tag = node.Name;
@@ -580,14 +589,36 @@ namespace MusicBox
             string listid = it.Tag.ToString();
             if (listView1.SelectedItems.Count > 0)
             {
+                var result = MessageBox.Show("确定要移动所选中的歌曲吗，是否需要移动本地文件？选择“是”移动本地文件，选择“否”仅逻辑移动。", "提示", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                if (result == DialogResult.Cancel)
+                    return;
+                bool yes = result == DialogResult.Yes;
+                bool root = treeView1.SelectedNode != null && treeView1.SelectedNode.Name.Equals("-1");
                 foreach (ListViewItem vit in listView1.SelectedItems)
                 {
                     var playInfo = vit.Tag as PlayInfo;
-                    XmlConfig.AddSong(listid, playInfo);
-                    XmlConfig.DelPlayer(treeView1.SelectedNode.Name, playInfo.id);
-                    listView1.Items.RemoveAt(vit.Index);
+                    XmlConfig.SetSongPlaylist(playInfo.id, listid);
+                    if (!root)
+                        listView1.Items.RemoveAt(vit.Index);
+                    if (yes && File.Exists(playInfo.path))
+                    {
+                        string path = XmlConfig.GetDownloadPath(listid);
+                        if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                        {
+                            var newPath = Path.Combine(path, new FileInfo(playInfo.path).Name);
+                            File.Move(playInfo.path, newPath);
+                            XmlConfig.SetSongPath(playInfo.id, newPath);
+                            if (root)
+                            {
+                                playInfo.path = newPath;
+                                vit.SubItems[5].Text = Player.IsVaild(playInfo) ? "本地" : "否";
+                                vit.SubItems[6].Text = newPath;
+                            }
+                        }
+                    }
                 }
-                refreshIndex();
+                if (!root)
+                    refreshIndex();
             }
 
         }
@@ -664,10 +695,13 @@ namespace MusicBox
             toolStripMenuItem.DropDownItems.Clear();
             foreach (TreeNode node in treeView1.Nodes)
             {
-                ToolStripMenuItem it = new ToolStripMenuItem();
-                it.Tag = node.Name;
-                it.Text = node.Text;
-                toolStripMenuItem.DropDownItems.Add(it);
+                if (!node.Name.Equals("-1"))
+                {
+                    ToolStripMenuItem it = new ToolStripMenuItem();
+                    it.Tag = node.Name;
+                    it.Text = node.Text;
+                    toolStripMenuItem.DropDownItems.Add(it);
+                }
             }
         }
         private void cmsWebListView_Opening(object sender, CancelEventArgs e)
@@ -685,6 +719,11 @@ namespace MusicBox
         {
             if (lvWebList.SelectedItems.Count == 1)
             {
+                if (treeView1.SelectedNode == null)
+                {
+                    MessageBox.Show("请先选择播放列表！");
+                    return;
+                }
                 SongsProgress.Get(this).AddSong(lvWebList.SelectedItems[0].Tag as SongInfo, treeView1.SelectedNode.Name);
                 play(listView1.Items.Count - 1);
             }
@@ -773,14 +812,20 @@ namespace MusicBox
 
         private void Download(Func<List<DownloadInfo>> getItems)
         {
-            string dirPath = XmlConfig.DownloadPath;
+            if (this.treeView1.SelectedNode == null)
+            {
+                MessageBox.Show("请先选择播放列表！");
+                return;
+            }
+            string dirPath = XmlConfig.GetDownloadPath(treeView1.SelectedNode.Name);
             if (string.IsNullOrEmpty(dirPath) || !Directory.Exists(dirPath))
             {
                 FolderBrowserDialog fbd = new FolderBrowserDialog();
                 if (fbd.ShowDialog() == DialogResult.OK)
                 {
                     DirectoryInfo dir = new DirectoryInfo(fbd.SelectedPath);
-                    txtDownloadPath.Text = dirPath = XmlConfig.DownloadPath = dir.FullName;
+                    txtDownloadPath.Text = dirPath = dir.FullName;
+                    XmlConfig.SetDownloadPath(treeView1.SelectedNode.Name, dir.FullName);
                 }
                 else
                     return;
@@ -846,17 +891,28 @@ namespace MusicBox
 
         private void btnChooseDownDir_Click(object sender, EventArgs e)
         {
+            if (this.treeView1.SelectedNode == null)
+            {
+                MessageBox.Show("请先选择播放列表！");
+                return;
+            }
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == DialogResult.OK)
             {
                 DirectoryInfo dir = new DirectoryInfo(fbd.SelectedPath);
-                txtDownloadPath.Text = XmlConfig.DownloadPath = dir.FullName;
+                txtDownloadPath.Text = dir.FullName;
+                XmlConfig.SetDownloadPath(this.treeView1.SelectedNode.Name, dir.FullName);
             }
         }
 
         private void btnChangeDownload_Click(object sender, EventArgs e)
         {
             checkDownloadWithListen = !checkDownloadWithListen;
+        }
+
+        private void btnChangeDownbest_Click(object sender, EventArgs e)
+        {
+            checkDownloadBest = !checkDownloadBest;
         }
 
         private bool checkDownloadWithListen
@@ -869,6 +925,19 @@ namespace MusicBox
             {
                 XmlConfig.DownloadWithListen = value;
                 btnChangeDownload.Image = value ? global::MusicBox.Properties.Resources.check : global::MusicBox.Properties.Resources.uncheck;
+            }
+        }
+
+        public bool checkDownloadBest
+        {
+            get
+            {
+                return XmlConfig.DownloadBest;
+            }
+            set
+            {
+                XmlConfig.DownloadBest = value;
+                btnChangeDownbest.Image = value ? global::MusicBox.Properties.Resources.check : global::MusicBox.Properties.Resources.uncheck;
             }
         }
 
@@ -931,7 +1000,7 @@ namespace MusicBox
             // 返回拖拽项
             ListViewItem item = (ListViewItem)e.Data.GetData(typeof(ListViewItem));
 
-            XmlConfig.OrderSong(treeView1.SelectedNode.Name, (PlayInfo)item.Tag, (PlayInfo)lv.Items[index].Tag);
+            XmlConfig.OrderSong((PlayInfo)item.Tag, (PlayInfo)lv.Items[index].Tag);
 
             //在目标索引位置插入一个拖拽项目的副本
             lv.Items.Insert(index, (ListViewItem)item.Clone());
@@ -973,7 +1042,7 @@ namespace MusicBox
             foreach (ListViewItem item in listView1.Items)
             {
                 item.SubItems[0].Text = (item.Index + 1).ToString();
-                if (!setIndex && ((PlayInfo)item.Tag).currentUrl == axWindowsMediaPlayer1.currentMedia.sourceURL)
+                if (!setIndex && axWindowsMediaPlayer1.currentMedia != null && ((PlayInfo)item.Tag).currentUrl == axWindowsMediaPlayer1.currentMedia.sourceURL)
                 {
                     myplayer.CurrentPlay = item.Index;
                     setIndex = true;

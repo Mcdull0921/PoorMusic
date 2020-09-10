@@ -28,5 +28,9 @@ namespace MusicLibrary
         public string songTimeMinutes { get; set; }
         public string songUrl { get; set; }
         public bool isListenFee { get; set; }
+        /// <summary>
+        /// 是否有无损资源
+        /// </summary>
+        public bool hasLossless { get; set; }
     }
 }

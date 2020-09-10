@@ -76,7 +76,7 @@ namespace MusicBox
         //    }
         //}
 
-        public async void Play(int index)
+        public async void Play(int index, string downloadPath, int quality)
         {
             if (index >= 0 && index < NumOfMusic)
             {
@@ -90,16 +90,16 @@ namespace MusicBox
                     var url = playInfo.url;
                     if (IsKuwo(url))
                     {
-                        url = await Task.Run(() => KuwoHelper.GetSongUrl(int.Parse(url.Substring(3))));
+                        url = await Task.Run(() => KuwoHelper.GetSongUrl(int.Parse(url.Substring(3)), quality));
                     }
-                    if (XmlConfig.DownloadWithListen)
+                    if (XmlConfig.DownloadWithListen && !string.IsNullOrEmpty(downloadPath) && Directory.Exists(downloadPath))
                     {
                         var downInfo = new DownloadInfo
                         {
                             url = url,
                             name = playInfo.remark,
                             author = playInfo.artist,
-                            dirPath = XmlConfig.DownloadPath
+                            dirPath = downloadPath
                         };
                         await Task.Run(() => httpHelper.Download(downInfo));
                         playInfo.path = downInfo.fullpath;

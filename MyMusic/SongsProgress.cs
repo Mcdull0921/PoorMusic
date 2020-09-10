@@ -94,7 +94,7 @@ namespace MusicBox
             foreach (var s in songs)
             {
                 if (Player.IsKuwo(s.url))
-                    s.url = KuwoHelper.GetSongUrl(int.Parse(s.url.Substring(3)));
+                    s.url = KuwoHelper.GetSongUrl(int.Parse(s.url.Substring(3)), owner.checkDownloadBest ? 320 : 128);
                 if (!string.IsNullOrEmpty(s.url))
                 {
                     if (httpHelper.Download(s) && s.playInfo != null)
@@ -116,6 +116,7 @@ namespace MusicBox
                 owner.downloadProgressBar.Visible = false;
                 MessageBox.Show("下载完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 process.Close();
+                owner.bindListView();
             }));
             thread = null;
         }

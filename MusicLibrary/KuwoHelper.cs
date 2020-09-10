@@ -11,7 +11,7 @@ namespace MusicLibrary
     {
         const string SEARCH_URL = "http://www.kuwo.cn/api/www/search/searchMusicBykeyWord?key={0}&pn={1}&rn={2}";
         const string REFERER_URL = "http://www.kuwo.cn/search/list?key={0}";
-        const string SONG_URL = "http://www.kuwo.cn/url?format=mp3&rid={0}&response=url&type=convert_url3&br=128kmp3&from=web&t=0&reqId=0";
+        const string SONG_URL = "http://www.kuwo.cn/url?format=mp3&rid={0}&response=url&type=convert_url3&br={1}kmp3&from=web&t=0&reqId=0";
         const string TOKEN = "2UR1Q103WKa";  //随机数就行
 
         public static KuwoResultData Search(string keyword, int pageNo, int pageSize)
@@ -28,9 +28,15 @@ namespace MusicLibrary
             return null;
         }
 
-        public static string GetSongUrl(int id)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="quality">比特率：128kbps(流畅) 192kbps（高品） 320kbps（超品）</param>
+        /// <returns></returns>
+        public static string GetSongUrl(int id, int quality)
         {
-            var json = HttpHelper.GetHtml(string.Format(SONG_URL, id), null, false, null);
+            var json = HttpHelper.GetHtml(string.Format(SONG_URL, id, quality), null, false, null);
             var d = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
             return d.url != null ? d.url : "";
         }

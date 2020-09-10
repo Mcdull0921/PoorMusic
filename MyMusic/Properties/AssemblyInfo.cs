@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过下列属性集
 // 控制。更改这些属性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("穷人音乐盒Beta版")]
+[assembly: AssemblyTitle("穷人音乐盒")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("老肖")]
-[assembly: AssemblyProduct("PoorMusic")]
-[assembly: AssemblyCopyright("Copyright © 老肖 2009-2019")]
+[assembly: AssemblyProduct("PoorMusic Beta版")]
+[assembly: AssemblyCopyright("Copyright © 老肖 2009-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      内部版本号
 //      修订号
 //
-[assembly: AssemblyVersion("1.0.0.6")]
-[assembly: AssemblyFileVersion("1.0.0.6")]
+[assembly: AssemblyVersion("0.3.3.0")]
+[assembly: AssemblyFileVersion("0.3.3.0")]
