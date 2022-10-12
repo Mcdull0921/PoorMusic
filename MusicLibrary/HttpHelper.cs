@@ -132,7 +132,10 @@ namespace MusicLibrary
 
                 httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (!autoRedirect && httpWebResponse.StatusCode == HttpStatusCode.Found)
-                    return "302";
+                {
+                    //return "302";
+                    return httpWebResponse.Headers["location"];
+                }
                 Stream responseStream = httpWebResponse.GetResponseStream();
                 StreamReader streamReader = new StreamReader(responseStream, encoding);
                 string html = streamReader.ReadToEnd();

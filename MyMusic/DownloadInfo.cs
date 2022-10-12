@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,8 +19,16 @@ namespace MusicBox
             get
             {
                 var ext = url.Substring(url.LastIndexOf('.'));
-                return string.Format("{0}\\{1}{2}", dirPath, name + "-" + author, ext);
+                return removeIllegalChar(string.Format("{0}\\{1}{2}", dirPath, name + "-" + author, ext));
             }
+        }
+
+        private string removeIllegalChar(string path)
+        {
+            StringBuilder sb = new StringBuilder(path);
+            foreach (char c in Path.GetInvalidPathChars())
+                sb.Replace(c.ToString(), string.Empty);
+            return sb.ToString().Trim();
         }
     }
 }
